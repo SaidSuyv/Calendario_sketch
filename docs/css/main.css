@@ -1,0 +1,56 @@
+div.calendario{
+
+  text-align: center;
+
+  max-width: 700px;
+
+}
+
+div.dia{
+
+  min-width: calc(100% / 7);
+
+}
+
+div.cuadros-mes div.dia{
+  cursor: pointer;
+}
+
+div.cuadros-mes div.dia:hover{
+
+  background: #efefef;
+
+}
+
+div.today{
+
+  background: #b3eaf4;
+
+}
+
+div.cuadros-mes div.today:hover{
+  background: #04c6ea;
+}
+
+div.cuadros-mes div.out-of-month{
+  background: #aaa;
+  color: #555;
+  cursor: default;
+}
+
+div.cuadros-mes div.out-of-month:hover{
+  background: #aaa;
+}
+
+p.texto-dia{
+  margin-bottom: .5rem;
+}
+
+div.cuadros-mes div.courses{
+
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0438ea;
+
+}
