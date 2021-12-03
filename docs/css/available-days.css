@@ -1,0 +1,5 @@
+.available-days{
+  max-height: 500px;
+  background: #eee;
+  overflow-y: hidden;
+}
