@@ -2,6 +2,7 @@ const monthName = document.querySelector('.titulo-del-cuadro h1');
 const dias = document.querySelectorAll('div.cuadros-mes div.dia p.texto-dia');
 
 var today = new Date();
+today = [today.getFullYear(),today.getMonth(),today.getDate()];
 var date = new Date();
 monthName.innerHTML = date.toLocaleDateString("en-US", {month:'long'});
 
@@ -39,9 +40,13 @@ function renderCalendar(...f){
 
   for(let element of dias){
 
-    let ele_month = new Date(year + f[0], month + f[1], i).getMonth();
-    if(ele_month != current_month) element.parentElement.classList.add('out-of-month');
+    let ele = new Date(year + f[0], month + f[1], i);
+    ele = [ele.getFullYear(),ele.getMonth(),ele.getDate()];
+    if(ele[1] != current_month) element.parentElement.classList.add('out-of-month');
     else element.parentElement.classList.remove('out-of-month');
+
+    if(ele[0] == today[0] && ele[1] == today[1] && ele[2] == today[2]) element.parentElement.classList.add('today');
+    else element.parentElement.classList.remove('today');
 
     element.innerHTML = prevLastDay;
     i++;
