@@ -14,7 +14,10 @@ const days = {0:'Sun',1:'Mon',2:'Tue',3:'Wed',4:'Thu',5:'Fri',6:'Sat'}
 function ndeah(dayNum){ for(let day in days) if(dayNum == day) return days[day]; }
 
 function changeMonth(fecha){
-  monthName.innerHTML = fecha.toLocaleDateString("en-US", {month:'long'});
+  
+  if (fecha.getFullYear() == today[0]) monthName.innerHTML = fecha.toLocaleDateString("en-US", {month:'long'});
+  else monthName.innerHTML = fecha.toLocaleDateString("en-US", {month:'long', year:'numeric'});
+  
 }
 
 function renderCalendar(...f){
