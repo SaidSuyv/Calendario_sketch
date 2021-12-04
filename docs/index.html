@@ -22,7 +22,7 @@
 
   <div class="container">
 
-    <div class="data-course" data-courses=' [ {"Name":"Math","Room":"203"} , {"Name":"Physics","Room":"203"} ] '></div>
+    <div class="db-non-visible-info" data-courses=' [ {"name":"Math","room":"203", "start": "date", "end": "date", "teacher":"juan martinez", "days-availables": [ {"month": "November", "date": "21", "start": "10:00", "end": "11:30"} ]} ] '></div>
 
     <div class="calendario m-auto">
 
@@ -58,150 +58,7 @@
 
       </div>
 
-      <div class="cuadros-mes">
-
-        <div class="semana-1 d-flex my-2">
-
-          <div class="dia dia-1">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-2">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-3">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-4">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-5">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-6">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-7">
-            <p class="texto-dia">{n}</p>
-          </div>
-
-        </div>
-
-        <div class="semana-2 d-flex my-2">
-
-          <div class="dia dia-1">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-2">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-3">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-5">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-6">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-7">
-            <p class="texto-dia">{n}</p>
-          </div>
-
-        </div>
-
-        <div class="semana-3 d-flex my-2">
-
-          <div class="dia dia-1">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-2">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-3">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-4">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-5">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-6">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-7">
-            <p class="texto-dia">{n}</p>
-          </div>
-
-        </div>
-
-        <div class="semana-4 d-flex my-2">
-
-          <div class="dia dia-1">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-2">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-3">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-4">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-          <div class="dia dia-5">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-6">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-7">
-            <p class="texto-dia">{n}</p>
-            <div class="courses m-auto mb-1"></div>
-          </div>
-
-        </div>
-
-        <div class="semana-5 d-flex my-2">
-
-          <div class="dia dia-1">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-2">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-3">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-4">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-5">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-6">
-            <p class="texto-dia">{n}</p>
-          </div>
-          <div class="dia dia-7">
-            <p class="texto-dia">{n}</p>
-          </div>
-
-        </div>
-
-      </div>
+      <div class="cuadros-mes"></div>
 
     </div>
 
@@ -275,6 +132,7 @@
       <h5 class="offcanvas-title" id="offcanvasLabel">New Course</h5>
       <button type="button" class="btn-close text-reset" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"></button>
     </div>
+
     <div class="offcanvas-body">
 
       <div class="container">
@@ -293,6 +151,16 @@
             <label for="courseEnd" class="form-label">End</label>
             <input type="date" class="form-control" id="courseEnd" placeholder="dd/mm/aaaa">
           </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="courseRoom" class="form-label">Course's Classroom</label>
+          <input type="number" class="form-control" id="courseRoom" min="0" max="999">
+        </div>
+
+        <div class="mb-3">
+          <label for="courseTeacher" class="form-label">Teacher's Name</label>
+          <input type="text" class="form-control" id="courseTeacher">
         </div>
 
         <div class="row g-0 mb-3">
@@ -414,9 +282,10 @@
 
     };
 
-    prueba();
+    //prueba();
   </script>
 
+  <script src="script/calendar-generator.js" charset="utf-8"></script>
   <script src="script/main.js" charset="utf-8"></script>
   <script src="script/change_month.js" charset="utf-8"></script>
 
