@@ -1,9 +1,9 @@
 var yr = 0;
 var mnth = 0;
 
-document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(element=>{
+document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(arrow=>{
 
-  element.addEventListener('click',(e)=>{
+  arrow.addEventListener('click',(e)=>{
 
     switch (true) {
       case e.target.className.includes('left'):

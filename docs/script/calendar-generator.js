@@ -6,25 +6,25 @@ for(let i = 0; i < 5; i++){
 
   var days_element = `
   <div class="semana-${weekCounter} d-flex my-2">
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
-    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" data-courses='[ "Math" , "Physics" ]'>
+    <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
       <p class="texto-dia">{n}</p>
     </div>
   </div>

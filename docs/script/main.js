@@ -1,5 +1,5 @@
 const monthName = document.querySelector('.titulo-del-cuadro h1');
-const dias = document.querySelectorAll('div.cuadros-mes div.dia p.texto-dia');
+const dias = document.querySelectorAll('div.cuadros-mes div.dia');
 
 var today = new Date();
 today = [today.getFullYear(),today.getMonth(),today.getDate()];
@@ -14,10 +14,10 @@ const days = {0:'Sun',1:'Mon',2:'Tue',3:'Wed',4:'Thu',5:'Fri',6:'Sat'}
 function ndeah(dayNum){ for(let day in days) if(dayNum == day) return days[day]; }
 
 function changeMonth(fecha){
-  
+
   if (fecha.getFullYear() == today[0]) monthName.innerHTML = fecha.toLocaleDateString("en-US", {month:'long'});
   else monthName.innerHTML = fecha.toLocaleDateString("en-US", {month:'long', year:'numeric'});
-  
+
 }
 
 function renderCalendar(...f){
@@ -45,13 +45,24 @@ function renderCalendar(...f){
 
     let ele = new Date(year + f[0], month + f[1], i);
     ele = [ele.getFullYear(),ele.getMonth(),ele.getDate()];
-    if(ele[1] != current_month) element.parentElement.classList.add('out-of-month');
-    else element.parentElement.classList.remove('out-of-month');
 
-    if(ele[0] == today[0] && ele[1] == today[1] && ele[2] == today[2]) element.parentElement.classList.add('today');
-    else element.parentElement.classList.remove('today');
+    if(ele[1] != current_month) element.classList.add('out-of-month');
+    else element.classList.remove('out-of-month');
 
-    element.innerHTML = prevLastDay;
+    if(ele[0] == today[0] && ele[1] == today[1] && ele[2] == today[2]) element.classList.add('today');
+    else element.classList.remove('today');
+
+    element.children[0].innerHTML = prevLastDay;
+    let day_courses = edit_courses(new Date(year + f[0], month + f[1], i));
+    if(day_courses.length > 0){
+      element.setAttribute('data-has-courses','true');
+      element.setAttribute('data-courses-list',day_courses.join(','));
+      element.innerHTML += '<div class="courses m-auto mb-1"></div>';
+    }else{
+      element.setAttribute('data-has-courses','false');
+      element.removeAttribute('data-courses-list');
+      if(element.children.length > 1) element.removeChild(element.children[1]);
+    }
     i++;
     prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
 
