@@ -3,7 +3,7 @@ const db = JSON.parse(document.querySelector('.db-non-visible-info').getAttribut
 console.log(db);
 
 function edit_courses(date_cur_element){
-
+  
   let courses_for_day = [];
   let course_name;
 

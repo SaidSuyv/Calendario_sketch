@@ -22,7 +22,7 @@
 
   <div class="container">
 
-    <div class="db-non-visible-info" data-courses=' [ {"name":"Math","room":"203", "start": "date", "end": "date", "teacher":"juan martinez", "days-availables": [ {"year": "2021", "month": "December", "date": "12", "start": "10:00", "end": "11:30"} ]} , {"name":"Physics","room":"203", "start": "date", "end": "date", "teacher":"juan martinez", "days-availables": [ {"year": "2021", "month": "December", "date": "21", "start": "10:00", "end": "11:30"} ]} ] '></div>
+    <div class="db-non-visible-info" data-courses=' [ {"name":"Math","room":"203", "course_start": "2021-11-02", "course_end": "2021-11-03", "teacher":"juan martinez", "days-availables": [ {"year": "2021", "month": "December", "date": "12", "hour_start": "10:00", "hour_end": "11:30"} ]} , {"name":"Physics","room":"203", "course_start": "date", "course_end": "date", "teacher":"juan martinez", "days-availables": [ {"year": "2021", "month": "December", "date": "12", "hour_start": "10:00", "hour_end": "11:30"},{"year": "2021", "month": "December", "date": "21", "hour_start": "10:00", "hour_end": "11:30"} ]} ] '></div>
 
     <div class="calendario m-auto">
 
@@ -76,39 +76,7 @@
       <h5 class="offcanvas-subtitle" id="offcanvasLabel">Your courses</h5>
       <hr>
 
-      <div class="courses-container accordion accordion-flush" id="accordionFlushExample">
-
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="flush-headingOne">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-              {Course's name}
-            </button>
-          </h2>
-          <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-
-              <div class="row">
-
-                <div class="col-6">
-
-                  <p> <b>Schedule:</b> {course's schedule}</p>
-
-                  <p> <b>Teacher:</b> {something more}</p>
-
-                </div>
-                <div class="col-6">
-
-                  <p> <b>Room:</b> {course's schedule}</p>
-
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
+      <div class="courses-container accordion accordion-flush" id="accordionCourses"></div>
 
     </div>
 
@@ -126,8 +94,7 @@
 
   </div>
 
-
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourse" aria-labelledby="offcanvasLabel">
+  <form class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourse" aria-labelledby="offcanvasLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasLabel">New Course</h5>
       <button type="button" class="btn-close text-reset" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"></button>
@@ -139,28 +106,28 @@
 
         <div class="mb-3">
           <label for="courseName" class="form-label">Course's name</label>
-          <input type="email" class="form-control" id="courseName">
+          <input type="text" class="form-control" id="courseName" name="courseName">
         </div>
 
         <div class="row g-3 mb-3">
           <div class="col-6">
             <label for="courseStart" class="form-label">Start</label>
-            <input type="date" class="form-control" id="courseStart" placeholder="dd/mm/aaaa">
+            <input type="date" class="form-control" id="courseStart" name="courseStart" placeholder="dd/mm/aaaa">
           </div>
           <div class="col-6">
             <label for="courseEnd" class="form-label">End</label>
-            <input type="date" class="form-control" id="courseEnd" placeholder="dd/mm/aaaa">
+            <input type="date" class="form-control" id="courseEnd" name="courseEnd" placeholder="dd/mm/aaaa">
           </div>
         </div>
 
         <div class="mb-3">
           <label for="courseRoom" class="form-label">Course's Classroom</label>
-          <input type="number" class="form-control" id="courseRoom" min="0" max="999">
+          <input type="number" class="form-control" id="courseRoom" name="courseRoom" min="0" max="999">
         </div>
 
         <div class="mb-3">
           <label for="courseTeacher" class="form-label">Teacher's Name</label>
-          <input type="text" class="form-control" id="courseTeacher">
+          <input type="text" class="form-control" id="courseTeacher" name="courseTeacher">
         </div>
 
         <div class="row g-0 mb-3">
@@ -172,49 +139,49 @@
             <div class="day-btn">
 
               <p class="m-0">Mon</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault1" checked>
+              <input class="form-check-input" type="checkbox" id="loopMon" checked>
 
             </div>
 
             <div class="day-btn">
 
               <p class="m-0">Tue</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault2" checked>
+              <input class="form-check-input" type="checkbox" id="loopTue" checked>
 
             </div>
 
             <div class="day-btn">
 
               <p class="m-0">Wed</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault3" checked>
+              <input class="form-check-input" type="checkbox" id="loopWed" checked>
 
             </div>
 
             <div class="day-btn">
 
               <p class="m-0">Thu</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault4" checked>
+              <input class="form-check-input" type="checkbox" id="loopThu" checked>
 
             </div>
 
             <div class="day-btn">
 
               <p class="m-0">Fri</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault5" checked>
+              <input class="form-check-input" type="checkbox" id="loopFri" checked>
 
             </div>
 
             <div class="day-btn">
 
               <p class="m-0">Sat</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault6" checked>
+              <input class="form-check-input" type="checkbox" id="loopSat" checked>
 
             </div>
 
             <div class="day-btn">
 
               <p class="m-0">Sun</p>
-              <input class="form-check-input" type="checkbox" name="flexRadioDefault" id="flexRadioDefault7" checked>
+              <input class="form-check-input" type="checkbox" id="loopSun" checked>
 
             </div>
 
@@ -229,18 +196,18 @@
           <div class="av-day my-3 container d-flex justify-content-around align-items-center flex-wrap gy-3">
 
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-              <label class="form-check-label" for="flexSwitchCheckChecked">{Month,day}</label>
+              <input class="form-check-input" type="checkbox" role="switch" id="Nov21" name='{"year":"2021","month":"November","date":"21"}' checked>
+              <label class="form-check-label" for="Nov21">{Month,day}</label>
             </div>
 
             <div class="hours-inp d-flex gx-3 align-items-center">
 
               <div>
-                <input type="time" class="form-time-input" id="courseEnd">
+                <input type="time" class="form-time-input" id="Nov21_hourStart" name="Nov21_hourStart">
               </div>
               <div class="mx-3"><p class="m-auto">-</p></div>
               <div>
-                <input type="time" class="form-time-input" id="courseEnd">
+                <input type="time" class="form-time-input" id="Nov21_hourEnd" name="Nov21_hourEnd">
               </div>
 
             </div>
@@ -259,15 +226,16 @@
 
       <div class="buttons d-flex justify-content-center mb-3">
 
-        <button class="btn btn-dark bg-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" role="button">Add New Course</button>
+        <button class="btn btn-dark bg-dark" type="submit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" role="button">Add New Course</button>
 
       </div>
 
     </div>
 
-  </div>
+  </form>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
   <script charset="utf-8">
     var element = document.querySelector('div.cuadros-mes div.semana-2 div.dia-4');
@@ -289,6 +257,8 @@
   <script src="script/adding-attributes.js" charset="utf-8"></script>
   <script src="script/main.js" charset="utf-8"></script>
   <script src="script/change_month.js" charset="utf-8"></script>
+  <script src="script/send_data_new_course.js" charset="utf-8"></script>
+  <script src="script/update-courses_coursesList.js" charset="utf-8"></script>
 
 </body>
 

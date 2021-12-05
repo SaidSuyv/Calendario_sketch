@@ -53,7 +53,12 @@ function renderCalendar(...f){
     else element.classList.remove('today');
 
     element.children[0].innerHTML = prevLastDay;
+
+    let dateForDiv = new Date(year + f[0], month + f[1], i);
+    element.setAttribute('data-el-date',[dateForDiv.toLocaleDateString("en-US",{year:'numeric'}),dateForDiv.getMonth(),dateForDiv.toLocaleDateString("en-US",{day:'numeric'})]);
+
     let day_courses = edit_courses(new Date(year + f[0], month + f[1], i));
+
     if(day_courses.length > 0){
       element.setAttribute('data-has-courses','true');
       element.setAttribute('data-courses-list',day_courses.join(','));
