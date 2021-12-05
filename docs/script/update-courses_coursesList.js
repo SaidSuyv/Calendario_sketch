@@ -17,9 +17,10 @@ $('.cuadros-mes').click(function(ev){
 });
 
 function process(eventToLoad){
+  let currentDateDiv = eventToLoad.getAttribute('data-el-date').split(',');
+  document.querySelector('#offcanvasLabel_coursesList').innerHTML = `${new Date(parseInt(currentDateDiv[0]),parseInt(currentDateDiv[1]),parseInt(currentDateDiv[2])).toLocaleDateString("en-US",{month:'long'})} ${currentDateDiv[2]}, ${currentDateDiv[0]}`;
   if(eventToLoad.getAttribute('data-has-courses') == 'true'){
 
-    let currentDateDiv = eventToLoad.getAttribute('data-el-date').split(',');
     let coursesList = edit_courses(new Date(parseInt(currentDateDiv[0]),parseInt(currentDateDiv[1]),parseInt(currentDateDiv[2])));
     if(coursesList.length > 0) {
       let ind = 1;
@@ -28,8 +29,8 @@ function process(eventToLoad){
           if(courseDB['name'] == courseForDay){
             drawCourse(courseDB,ind);
           }
-          ind++;
         }
+        ind++;
       }
       alreadyLoad = false;
     }
