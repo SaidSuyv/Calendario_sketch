@@ -36,18 +36,18 @@ function send_days(limites){
     <div class="av-day my-3 container d-flex justify-content-around align-items-center flex-wrap gy-3">
 
       <div class="form-check form-switch">
-        <input class="form-check-input av-day-inp" type="checkbox" role="switch" id="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}" name='{"year":"${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getFullYear()}","month":"${currentMonth}","date":"${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}"}' checked>
+        <input class="form-check-input av-day-inp" type="checkbox" role="switch" id="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}" name='{"year":"${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getFullYear()}","month":"${currentMonth}","date":"${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}","day":"${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDay()}"}' checked onclick="disableHours(event)">
         <label class="form-check-label" for="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}">${currentMonth} ${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}</label>
       </div>
 
       <div class="hours-inp d-flex gx-3 align-items-center">
 
         <div>
-          <input type="time" class="form-time-input" id="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourStart" name="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourStart">
+          <input type="time" class="form-time-input av-day-hour-inp" id="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourStart" name="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourStart">
         </div>
         <div class="mx-3"><p class="m-auto">-</p></div>
         <div>
-          <input type="time" class="form-time-input" id="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourEnd" name="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourEnd">
+          <input type="time" class="form-time-input av-day-hour-inp" id="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourEnd" name="${currentMonth}${new Date(parseInt(limites['start'][0]),parseInt(limites['start'][1])-1,dateStart).getDate()}_hourEnd">
         </div>
 
       </div>
@@ -61,15 +61,63 @@ function send_days(limites){
     }else document.querySelector('.available-days').innerHTML += day_htmlElement;
     dateStart++;
   }
+  document.querySelectorAll('.loop').forEach(inp=>{inp.checked=true});
 }
 
 //-----------------------------------
 
 document.querySelectorAll('.loop').forEach(inp=>{
   inp.onclick = ()=>{
+    let free_days = document.querySelectorAll('input.av-day-inp');
+    let free_days_hours_inputs = document.querySelectorAll('input.av-day-hour-inp');
+
     if (!inp.checked){
-      var free_days = document.querySelectorAll('input.av-day-inp');
-      console.log(free_days);
+
+      for(let inpFreeD of free_days){
+        if(ndeah(JSON.parse(inpFreeD.name)['day']) == inp.id){
+          inpFreeD.checked = false;
+          for(let hoursInp of free_days_hours_inputs){
+            if(hoursInp.id.includes(inpFreeD.id)){
+              hoursInp.disabled = true;
+            }
+          }
+        };
+      }
+
+    }else{
+
+      for(let inpFreeD of free_days){
+        if(ndeah(JSON.parse(inpFreeD.name)['day']) == inp.id){
+          inpFreeD.checked = true;
+          for(let hoursInp of free_days_hours_inputs){
+            if(hoursInp.id.includes(inpFreeD.id)){
+              hoursInp.disabled = false;
+            }
+          }
+        };
+      }
+
     }
   };
 });
+
+function disableHours(evt){
+  let inp = evt.target;
+  let free_days_hours_inputs = document.querySelectorAll('input.av-day-hour-inp');
+
+  if(!inp.checked){
+    console.log(inp);
+    for(let hoursInp of free_days_hours_inputs){
+      if(hoursInp.id.includes(inp.id)){
+        hoursInp.disabled = true;
+      }
+    }
+
+  }else{
+    for(let hoursInp of free_days_hours_inputs){
+      if(hoursInp.id.includes(inp.id)){
+        hoursInp.disabled = false;
+      }
+    }
+  }
+}
