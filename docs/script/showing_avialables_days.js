@@ -1,7 +1,6 @@
 [document.querySelector('#courseStart'),document.querySelector('#courseEnd')].forEach(inp=>{
   inp.onchange=()=>{
     if(inp.value !== '') analizing(inp.id,inp.value);
-    else console.log(false);
   };
 });
 
@@ -16,8 +15,6 @@ function analizing(id,value){
       limits['end'] = value.split('-');
       break;
   }
-
-  console.log(limits);
 
   if(Object.keys(limits).length == 2){
     send_days(limits);
@@ -61,7 +58,9 @@ function send_days(limites){
     }else document.querySelector('.available-days').innerHTML += day_htmlElement;
     dateStart++;
   }
-  document.querySelectorAll('.loop').forEach(inp=>{inp.checked=true});
+  document.querySelectorAll('.loop').forEach(inp=>{inp.checked=false});
+  document.querySelectorAll('input.av-day-inp').forEach(inp=>{inp.checked=false});
+  document.querySelectorAll('input.av-day-hour-inp').forEach(inp=>{inp.disabled=true});
 }
 
 //-----------------------------------

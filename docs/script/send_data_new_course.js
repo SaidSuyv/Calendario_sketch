@@ -4,9 +4,6 @@ $(document).ready(function(){
     ev.preventDefault();
 
     var data = $(this).serializeArray();
-    /*for(let x of data){
-      if(x['name'])
-    }*/
     console.log(data);
     data.push({name:'tag',value:'login'});
 
