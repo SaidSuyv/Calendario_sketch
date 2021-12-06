@@ -1,9 +1,9 @@
-const db = JSON.parse(document.querySelector('.db-non-visible-info').getAttribute('data-courses'));
+let test2 = document.querySelector('#PRUEBA');
 
-console.log(db);
+console.log(test2);
 
 function edit_courses(date_cur_element){
-  
+
   let courses_for_day = [];
   let course_name;
 
