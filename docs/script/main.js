@@ -58,8 +58,8 @@ function renderCalendar(...f){
 
     let dateForDiv = new Date(year + f[0], month + f[1], i);
     element.setAttribute('data-el-date',[dateForDiv.toLocaleDateString("en-US",{year:'numeric'}),dateForDiv.getMonth(),dateForDiv.toLocaleDateString("en-US",{day:'numeric'})]);
-
-    let day_courses = edit_courses(new Date(year + f[0], month + f[1], i,f[2]));
+    
+    let day_courses = edit_courses(new Date(year + f[0], month + f[1], i),f[2]);
 
     if(day_courses.length > 0){
       element.setAttribute('data-has-courses','true');
@@ -77,12 +77,18 @@ function renderCalendar(...f){
 
 }
 
+var ndeah2;
+
 async function getAPI(){
-  fetch('http://192.168.1.117:8012/projects/MYSQL%20PHP/calendario_cursos/index.php')
+  fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
   .then(data=>data.json())
   .then(data=>{
-    renderCalendar(0,0,data);
-  });
+    ndeah2 = data;
+    console.log(ndeah2);
+    renderCalendar(0,0,ndeah2);
+  })
 }
+
+getAPI();
 
 //-----------------------------------------------------------------------------------------

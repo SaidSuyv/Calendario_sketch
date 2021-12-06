@@ -6,26 +6,35 @@ $('.cuadros-mes').click(function(ev){
     switch (ev.target.tagName) {
       case 'DIV':
         parentDiv = ev.target;
-        process(parentDiv);
+        getAPIForCourseList(parentDiv);
         break;
       case 'P':
         parentDiv = ev.target.parentElement;
-        process(parentDiv);
+        getAPIForCourseList(parentDiv);
         break;
     }
   }
 });
 
-function process(eventToLoad){
+async function getAPIForCourseList(parentUWU){
+  fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
+  .then(data=>data.json())
+  .then(data=>{
+    ndeah2 = data;
+    process(parentUWU,ndeah2);
+  })
+}
+
+function process(eventToLoad,data){
   let currentDateDiv = eventToLoad.getAttribute('data-el-date').split(',');
   document.querySelector('#offcanvasLabel_coursesList').innerHTML = `${new Date(parseInt(currentDateDiv[0]),parseInt(currentDateDiv[1]),parseInt(currentDateDiv[2])).toLocaleDateString("en-US",{month:'long'})} ${currentDateDiv[2]}, ${currentDateDiv[0]}`;
   if(eventToLoad.getAttribute('data-has-courses') == 'true'){
 
-    let coursesList = edit_courses(new Date(parseInt(currentDateDiv[0]),parseInt(currentDateDiv[1]),parseInt(currentDateDiv[2])));
+    let coursesList = edit_courses(new Date(parseInt(currentDateDiv[0]),parseInt(currentDateDiv[1]),parseInt(currentDateDiv[2])),data);
     if(coursesList.length > 0) {
       let ind = 1;
       for(let courseForDay of coursesList){
-        for(let courseDB of db){
+        for(let courseDB of data){
           if(courseDB['name'] == courseForDay){
             drawCourse(courseDB,ind);
           }
