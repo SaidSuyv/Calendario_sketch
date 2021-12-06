@@ -1,8 +1,4 @@
-let test2 = document.querySelector('#PRUEBA');
-
-console.log(test2);
-
-function edit_courses(date_cur_element){
+function edit_courses(date_cur_element,db){
 
   let courses_for_day = [];
   let course_name;

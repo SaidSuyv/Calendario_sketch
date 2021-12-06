@@ -9,21 +9,37 @@ document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(arrow=>{
       case e.target.className.includes('left'):
         if((month + mnth) != 0){
           mnth--;
-          renderCalendar(yr,mnth);
+          fetch('url')
+          .then(data=>data.json())
+          .then(data=>{
+            renderCalendar(yr,mnth,data);
+          });
         }else{
           yr--;
           mnth = 0;
-          renderCalendar(yr,mnth);
+          fetch('url')
+          .then(data=>data.json())
+          .then(data=>{
+            renderCalendar(yr,mnth,data);
+          });
         }
         break;
       case e.target.className.includes('right'):
         if((month + mnth) != 11){
           mnth++;
-          renderCalendar(yr,mnth);
+          fetch('url')
+            .then(data => data.json())
+            .then(data => {
+              renderCalendar(yr, mnth, data);
+            });
         }else{
           yr++;
           mnth = -11;
-          renderCalendar(yr,mnth);
+          fetch('url')
+            .then(data => data.json())
+            .then(data => {
+              renderCalendar(yr, mnth, data);
+            });
         }
         break;
     }
