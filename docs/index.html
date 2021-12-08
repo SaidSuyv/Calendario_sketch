@@ -60,6 +60,7 @@
 
     </div>
 
+    <button type="button" name="button" id="button" class="btn btn-dark bg-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourseUndeterminated">New Course</button>
   </div>
 
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasLabel">
@@ -78,24 +79,12 @@
 
     </div>
 
-    <div class="offcanvas-footer">
-
-      <hr>
-
-      <div class="buttons d-flex justify-content-center mb-3">
-
-        <button class="btn btn-dark bg-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourse" role="button">New Course</button>
-
-      </div>
-
-    </div>
-
   </div>
 
-  <form class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourse" aria-labelledby="offcanvasLabel">
+  <form class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourseUndeterminated" aria-labelledby="offcanvasLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasLabel">New Course</h5>
-      <button type="button" class="btn-close text-reset" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"></button>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasNewCourseUndeterminated" aria-label="Close" role="button"></button>
     </div>
 
     <div class="offcanvas-body">
@@ -201,7 +190,7 @@
 
       <div class="buttons d-flex justify-content-center mb-3">
 
-        <button class="btn btn-dark bg-dark" type="submit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" role="button">Add New Course</button>
+        <button class="btn btn-dark bg-dark" type="submit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourseUndeterminated" role="button">Add New Course</button>
 
       </div>
 

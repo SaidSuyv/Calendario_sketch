@@ -76,11 +76,11 @@ document.querySelectorAll('.loop').forEach(inp=>{
         if(ndeah(inpFreeD.name) == inp.id){
           inpFreeD.checked = false;
           for(let hoursInp of free_days_hours_inputs){
-            if(hoursInp.id.includes(inpFreeD.id)){
+            if(hoursInp.id.split('_')[0] == inpFreeD.id){
               hoursInp.disabled = true;
             }
           }
-        };
+        }else{continue;}
       }
 
     }else{
@@ -89,7 +89,7 @@ document.querySelectorAll('.loop').forEach(inp=>{
         if(ndeah(inpFreeD.name) == inp.id){
           inpFreeD.checked = true;
           for(let hoursInp of free_days_hours_inputs){
-            if(hoursInp.id.includes(inpFreeD.id)){
+            if(hoursInp.id.split('_')[0] == inpFreeD.id){
               hoursInp.disabled = false;
             }
           }

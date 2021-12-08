@@ -1,7 +1,7 @@
 var alreadyLoad = false;
+var parentDiv;
 
 $('.cuadros-mes').click(function(ev){
-  let parentDiv;
   if((ev.target.tagName == 'DIV' || ev.target.tagName == 'P' ) && (ev.target.className.includes('dia') || ev.target.className.includes('texto-dia') )){
     switch (ev.target.tagName) {
       case 'DIV':
