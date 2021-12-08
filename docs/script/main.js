@@ -78,18 +78,14 @@ function renderCalendar(...f){
 
 }
 
-var ndeah2;
-
-async function getAPI(){
-  fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
-  .then(data=>data.json())
-  .then(data=>{
-    ndeah2 = data;
-    console.log(ndeah2);
-    renderCalendar(0,0,ndeah2);
-  })
+function getAPIToday(){
+  $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+    function(info){
+      renderCalendar(0,0,info);
+    }
+  );
 }
 
-getAPI();
+getAPIToday();
 
 //-----------------------------------------------------------------------------------------

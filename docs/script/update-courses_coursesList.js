@@ -1,5 +1,6 @@
 var alreadyLoad = false;
 var parentDiv;
+var ndeah2;
 
 $('.cuadros-mes').click(function(ev){
   if((ev.target.tagName == 'DIV' || ev.target.tagName == 'P' ) && (ev.target.className.includes('dia') || ev.target.className.includes('texto-dia') )){

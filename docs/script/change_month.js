@@ -9,37 +9,37 @@ document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(arrow=>{
       case e.target.className.includes('left'):
         if((month + mnth) != 0){
           mnth--;
-          fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
-          .then(data=>data.json())
-          .then(data=>{
-            renderCalendar(yr,mnth,data);
-          });
+          $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+            function(infoCourses){
+              renderCalendar(yr,mnth,infoCourses);
+            }
+          );
         }else{
           yr--;
           mnth = 0;
-          fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
-          .then(data=>data.json())
-          .then(data=>{
-            renderCalendar(yr,mnth,data);
-          });
+          $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+            function(infoCourses){
+              renderCalendar(yr,mnth,infoCourses);
+            }
+          );
         }
         break;
       case e.target.className.includes('right'):
         if((month + mnth) != 11){
           mnth++;
-          fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
-            .then(data => data.json())
-            .then(data => {
-              renderCalendar(yr, mnth, data);
-            });
+          $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+            function(infoCourses){
+              renderCalendar(yr,mnth,infoCourses);
+            }
+          );
         }else{
           yr++;
           mnth = -11;
-          fetch('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php')
-            .then(data => data.json())
-            .then(data => {
-              renderCalendar(yr, mnth, data);
-            });
+          $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+            function(infoCourses){
+              renderCalendar(yr,mnth,infoCourses);
+            }
+          );
         }
         break;
     }

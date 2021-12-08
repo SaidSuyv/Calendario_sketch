@@ -60,7 +60,11 @@
 
     </div>
 
-    <button type="button" name="button" id="button" class="btn btn-dark bg-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourseUndeterminated">New Course</button>
+    <div class="my-4 d-flex justify-content-around">
+      <button type="button" name="button" id="buttonNewCourse" class="btn btn-dark bg-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourse">New Course</button>
+      <button type="button" name="button" id="buttonDeleteCourse" class="btn btn-dark bg-dark" data-bs-toggle="modal" data-bs-target="#modalDeleteCourse">Delete Course</button>
+    </div>
+
   </div>
 
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasLabel">
@@ -81,10 +85,10 @@
 
   </div>
 
-  <form class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourseUndeterminated" aria-labelledby="offcanvasLabel">
+  <form class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourse" aria-labelledby="offcanvasLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasLabel">New Course</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasNewCourseUndeterminated" aria-label="Close" role="button"></button>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasNewCourse" aria-label="Close" role="button"></button>
     </div>
 
     <div class="offcanvas-body">
@@ -190,13 +194,42 @@
 
       <div class="buttons d-flex justify-content-center mb-3">
 
-        <button class="btn btn-dark bg-dark" type="submit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourseUndeterminated" role="button">Add New Course</button>
+        <button class="btn btn-dark bg-dark" type="submit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourse" role="button">Add New Course</button>
 
       </div>
 
     </div>
 
   </form>
+
+  <div class="modal fade" tabindex="-1" id="modalDeleteCourse">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+      <form class="modal-content" id="deleteCourseForm">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Courses List</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <div class="accordion accordion-flush" id="accordionCoursesForDelete"></div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary m-auto" data-bs-dismiss="modal">Cancel</button>
+          <button id="submitDeletedCourses" type="submit" class="btn btn-danger m-auto" data-bs-dismiss="modal">Delete courses</button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -208,6 +241,7 @@
   <script src="script/send_data_new_course.js" charset="utf-8"></script>
   <script src="script/update-courses_coursesList.js" charset="utf-8"></script>
   <script src="script/showing_avialables_days.js" charset="utf-8"></script>
+  <script src="script/delete_course.js" charset="utf-8"></script>
 
 </body>
 
