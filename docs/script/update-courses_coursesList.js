@@ -80,6 +80,10 @@ function drawCourse(curso,count){
 
         </div>
 
+        <hr>
+
+        <button class="btn btn-dark bg-dark m-auto" type="button" role="button">Edit course</button>
+
       </div>
     </div>
   </div>
