@@ -4,12 +4,18 @@ function separateDatesData(nodeList){
   let arrayDates = [];
 
   for(let inputSwitch of nodeList){
+
     if(inputSwitch.checked){
+
       let inpDate = inputSwitch.getAttribute('data-date').split('/').reverse().map(num=>{return parseInt(num)});
       let objInp = {year:inpDate[0],month:new Date(inpDate[0],inpDate[1]-1,inpDate[2]).toLocaleDateString("en-US",{month:'long'}),date:inpDate[2]};
+      
       for(let inputHours of nodeList){
+
         if(inputHours.className.includes('form-time-input')){
+          
           if(inputHours.getAttribute('data-date') == inputSwitch.getAttribute('data-date')){
+            
             switch (inputHours.name.split('_')[1]) {
               case 'hourStart':
                 objInp['hourStart'] = inputHours.value;
@@ -18,14 +24,18 @@ function separateDatesData(nodeList){
                 objInp['hourEnd'] = inputHours.value;
                 break;
             }
+
           }
+
         }
+
       }
       arrayDates.push(objInp);
     }
+    
   }
 
-  return (arrayDates.length > 0) ? arrayDates : null;
+  return arrayDates;
 
 }
 

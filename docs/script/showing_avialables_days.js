@@ -111,7 +111,6 @@ function disableHours(evt){
   let free_days_hours_inputs = document.querySelectorAll('input.av-day-hour-inp');
 
   if(!inp.checked){
-    console.log(inp);
     for(let hoursInp of free_days_hours_inputs){
       if(hoursInp.getAttribute('data-date') == inp.getAttribute('data-date')){
         hoursInp.disabled = true;
