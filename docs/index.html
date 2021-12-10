@@ -61,7 +61,7 @@
     </div>
 
     <div class="my-4 d-flex justify-content-around">
-      <button type="button" name="button" id="buttonNewCourse" class="btn btn-dark bg-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourse">New Course</button>
+      <button type="button" name="button" id="buttonNewCourse" class="btn btn-dark bg-dark" data-bs-toggle="modal" data-bs-target="#modalNewCourse">New Course</button>
       <button type="button" name="button" id="buttonDeleteCourse" class="btn btn-dark bg-dark" data-bs-toggle="modal" data-bs-target="#modalDeleteCourse">Delete Course</button>
       <button class="btn btn-dark bg-dark" id="buttonEditCourse" type="button" name="button" data-bs-toggle="modal" data-bs-target="#allCoursesList">Edit courses</button>
     </div>
@@ -86,122 +86,133 @@
 
   </div>
 
-  <form class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNewCourse" aria-labelledby="offcanvasLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasLabel">New Course</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasNewCourse" aria-label="Close" role="button"></button>
+  <div class="modal fade" tabindex="-1" id="modalNewCourse">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+      <form class="modal-content" id="addCourseForm">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title">Add new course</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+        </div>
+
+        <div class="modal-body">
+          
+          <div class="container">
+
+            <div class="mb-3">
+              <label for="courseName" class="form-label">Course's name</label>
+              <input type="text" class="form-control new-course-form" id="courseName" name="courseName">
+            </div>
+    
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="courseStart" class="form-label">Start</label>
+                <input type="date" class="form-control new-course-form" id="courseStart" name="courseStart" placeholder="dd/mm/aaaa">
+              </div>
+              <div class="col-6">
+                <label for="courseEnd" class="form-label">End</label>
+                <input type="date" class="form-control new-course-form" id="courseEnd" name="courseEnd" placeholder="dd/mm/aaaa">
+              </div>
+            </div>
+    
+            <div class="mb-3">
+              <label for="courseRoom" class="form-label">Course's Classroom</label>
+              <input type="number" class="form-control new-course-form" id="courseRoom" name="courseRoom" min="0" max="999">
+            </div>
+    
+            <div class="mb-3">
+              <label for="courseTeacher" class="form-label">Teacher's Name</label>
+              <input type="text" class="form-control new-course-form" id="courseTeacher" name="courseTeacher">
+            </div>
+    
+            <div class="row g-0 mb-3">
+    
+              <h6 class="col-12">Loop:</h6>
+    
+              <div class="col-12 d-flex g-0 justify-content-evenly align-items-center">
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Mon</p>
+                  <input class="form-check-input loop" type="checkbox" id="Mon" checked>
+    
+                </div>
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Tue</p>
+                  <input class="form-check-input loop" type="checkbox" id="Tue" checked>
+    
+                </div>
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Wed</p>
+                  <input class="form-check-input loop" type="checkbox" id="Wed" checked>
+    
+                </div>
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Thu</p>
+                  <input class="form-check-input loop" type="checkbox" id="Thu" checked>
+    
+                </div>
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Fri</p>
+                  <input class="form-check-input loop" type="checkbox" id="Fri" checked>
+    
+                </div>
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Sat</p>
+                  <input class="form-check-input loop" type="checkbox" id="Sat" checked>
+    
+                </div>
+    
+                <div class="day-btn">
+    
+                  <p class="m-0">Sun</p>
+                  <input class="form-check-input loop" type="checkbox" id="Sun" checked>
+    
+                </div>
+    
+              </div>
+    
+            </div>
+    
+            <h6 class="mb-3">Select the available days:</h6>
+    
+            <div class="mb-3 available-days"></div>
+    
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+          <hr>
+
+          <div class="buttons d-flex justify-content-center mb-3">
+
+            <button class="btn btn-dark bg-dark" type="submit" role="button">Add Course</button>
+
+          </div>
+
+        </div>
+
+      </form>
+
     </div>
 
-    <div class="offcanvas-body">
-
-      <div class="container">
-
-        <div class="mb-3">
-          <label for="courseName" class="form-label">Course's name</label>
-          <input type="text" class="form-control new-course-form" id="courseName" name="courseName">
-        </div>
-
-        <div class="row g-3 mb-3">
-          <div class="col-6">
-            <label for="courseStart" class="form-label">Start</label>
-            <input type="date" class="form-control new-course-form" id="courseStart" name="courseStart" placeholder="dd/mm/aaaa">
-          </div>
-          <div class="col-6">
-            <label for="courseEnd" class="form-label">End</label>
-            <input type="date" class="form-control new-course-form" id="courseEnd" name="courseEnd" placeholder="dd/mm/aaaa">
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="courseRoom" class="form-label">Course's Classroom</label>
-          <input type="number" class="form-control new-course-form" id="courseRoom" name="courseRoom" min="0" max="999">
-        </div>
-
-        <div class="mb-3">
-          <label for="courseTeacher" class="form-label">Teacher's Name</label>
-          <input type="text" class="form-control new-course-form" id="courseTeacher" name="courseTeacher">
-        </div>
-
-        <div class="row g-0 mb-3">
-
-          <h6 class="col-12">Loop:</h6>
-
-          <div class="col-12 d-flex g-0 justify-content-evenly align-items-center">
-
-            <div class="day-btn">
-
-              <p class="m-0">Mon</p>
-              <input class="form-check-input loop" type="checkbox" id="Mon" checked>
-
-            </div>
-
-            <div class="day-btn">
-
-              <p class="m-0">Tue</p>
-              <input class="form-check-input loop" type="checkbox" id="Tue" checked>
-
-            </div>
-
-            <div class="day-btn">
-
-              <p class="m-0">Wed</p>
-              <input class="form-check-input loop" type="checkbox" id="Wed" checked>
-
-            </div>
-
-            <div class="day-btn">
-
-              <p class="m-0">Thu</p>
-              <input class="form-check-input loop" type="checkbox" id="Thu" checked>
-
-            </div>
-
-            <div class="day-btn">
-
-              <p class="m-0">Fri</p>
-              <input class="form-check-input loop" type="checkbox" id="Fri" checked>
-
-            </div>
-
-            <div class="day-btn">
-
-              <p class="m-0">Sat</p>
-              <input class="form-check-input loop" type="checkbox" id="Sat" checked>
-
-            </div>
-
-            <div class="day-btn">
-
-              <p class="m-0">Sun</p>
-              <input class="form-check-input loop" type="checkbox" id="Sun" checked>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <h6 class="mb-3">Select the available days:</h6>
-
-        <div class="mb-3 available-days"></div>
-
-      </div>
-
-    </div>
-
-    <div class="offcanvas-footer">
-
-      <hr>
-
-      <div class="buttons d-flex justify-content-center mb-3">
-
-        <button class="btn btn-dark bg-dark" type="submit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCourse" role="button">Add New Course</button>
-
-      </div>
-
-    </div>
-
-  </form>
+  </div>
 
   <div class="modal fade" tabindex="-1" id="modalEditCourse">
 
@@ -394,11 +405,14 @@
   <script src="script/adding-attributes.js" charset="utf-8"></script>
   <script src="script/main.js" charset="utf-8"></script>
   <script src="script/change_month.js" charset="utf-8"></script>
-  <script src="script/database_http/send_data_new_course.js" charset="utf-8"></script>
+  <!--<script src="script/database_http/send_data_new_course.js" charset="utf-8"></script>-->
   <script src="script/update-courses_coursesList.js" charset="utf-8"></script>
   <script src="script/showing_avialables_days.js" charset="utf-8"></script>
   <script src="script/database_http/delete_course.js" charset="utf-8"></script>
   <script src="script/database_http/editing-courses.js"></script>
+
+  <script src="script2/peticiones_http.js"></script>
+  <script src="script2/database_petitions/add_course.js"></script>
 
 </body>
 
