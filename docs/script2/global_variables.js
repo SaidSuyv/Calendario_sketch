@@ -13,3 +13,12 @@ var year = date.getFullYear(); // año actual
 /* Variables para cambiar meses y asi xd */
 var yr = 0;
 var mnth = 0;
+
+/* Variables para determinar los limites de los dias al añadir un nuevo curso o editarlo */
+
+var limites = {};
+var dayAlreadyWrote = false;
+
+/* Variable para hacer que pinche funcione lo del new curso y asi */
+
+var its_pressed = false;

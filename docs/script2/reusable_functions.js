@@ -69,7 +69,7 @@ function if_there_are_courses_that_day(date_cur_element,db,element){
 function whichDayIsIt(dayInNumber){
 
     let days = {0:'Sun',1:'Mon',2:'Tue',3:'Wed',4:'Thu',5:'Fri',6:'Sat'};
-    for(let day in days) if(dayNum == day) return days[day];
+    for(let day in days) if(dayInNumber == day) return days[day];
 
 }
 
@@ -131,5 +131,126 @@ function separateDatesData(nodeList){
   }
 
   return JSON.stringify(arrayDates);
+
+}
+
+//------------------------------------------------------------------------------------
+
+/*
+  Esta funcion mandar cada div para la lista de dias disponibles al añadir o editar un curso
+*/
+
+function send_data_for_available_days(limitsOfCourse){
+
+  let dateStart = limitsOfCourse['start'][2];
+
+  if(
+    parseInt(limitsOfCourse['end'][0]) >= parseInt(limitsOfCourse['start'][0]) &&
+    parseInt(limitsOfCourse['end'][1]) >= parseInt(limitsOfCourse['start'][1]) &&
+    parseInt(limitsOfCourse['end'][2]) >= parseInt(limitsOfCourse['start'][2])
+  ){
+    while(new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1]) - 1,parseInt(dateStart)).toLocaleDateString() != new Date(parseInt(limitsOfCourse['end'][0]),parseInt(limitsOfCourse['end'][1])-1,parseInt(limitsOfCourse['end'][2])+1).toLocaleDateString()){
+
+      let currentMonth = new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1]) - 1,parseInt(dateStart)).toLocaleDateString("en-US",{month:'long'});
+
+      let day_htmlElement = `
+      <div class="av-day my-3 container d-flex justify-content-around align-items-center flex-wrap gy-3">
+
+        <div class="form-check form-switch">
+          <input class="form-check-input av-day-inp new-course-form" type="checkbox" role="switch" data-date="${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).toLocaleDateString()}" id="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}" name='${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDay()}' checked onclick="disableHours(event)">
+          <label class="form-check-label" for="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}">${currentMonth} ${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}</label>
+        </div>
+
+        <div class="hours-inp d-flex gx-3 align-items-center">
+
+          <div>
+            <input type="time" class="form-time-input av-day-hour-inp new-course-form" data-date="${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).toLocaleDateString()}" id="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}_hourStart" name="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}_hourStart">
+          </div>
+          <div class="mx-3"><p class="m-auto">-</p></div>
+          <div>
+            <input type="time" class="form-time-input av-day-hour-inp new-course-form" data-date="${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).toLocaleDateString()}" id="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}_hourEnd" name="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]),parseInt(limitsOfCourse['start'][1])-1,dateStart).getDate()}_hourEnd">
+          </div>
+
+        </div>
+
+      </div>
+      `;
+
+      if(!dayAlreadyWrote) {
+        document.querySelector('.available-days-new-course').innerHTML = day_htmlElement;
+        dayAlreadyWrote = true;
+      }else document.querySelector('.available-days-new-course').innerHTML += day_htmlElement;
+      dateStart++;
+    }
+    dayAlreadyWrote = false;
+    document.querySelectorAll('.loop').forEach(inp=>{inp.checked=false});
+    document.querySelectorAll('input.av-day-inp').forEach(inp=>{inp.checked=false});
+    document.querySelectorAll('input.av-day-hour-inp').forEach(inp=>{inp.disabled=true});
+  }else{alert('Please choose a correct interval of dates')};
+
+}
+
+/*
+  Esta funcion es para analizar los dias limitsOfCourse para mandar cada uno de los dias
+  disponibles al añadir un curso
+*/
+
+function analize_date_input(id,value){
+
+  switch (id) {
+    case 'newCourseStart':
+      limites['start'] = value.split('-');
+      break;
+    case 'newCourseEnd':
+      limites['end'] = value.split('-');
+      break;
+  }
+
+  if(Object.keys(limites).length == 2){
+    send_data_for_available_days(limites);
+  }
+
+}
+
+//------------------------------------------------------------------------------------
+
+/*
+  Esta funcion es para desactivar el dia dentro del rango del curso para que ese dia en
+  especifico no sea almacenado
+*/
+
+function disableHours(evt){
+  let inp = evt.target;
+  let free_days_hours_inputs = document.querySelectorAll('input.av-day-hour-inp');
+
+  if(!inp.checked){
+    for(let hoursInp of free_days_hours_inputs){
+      if(hoursInp.getAttribute('data-date') == inp.getAttribute('data-date')){
+        hoursInp.disabled = true;
+      }
+    }
+
+  }else{
+    for(let hoursInp of free_days_hours_inputs){
+      if(hoursInp.getAttribute('data-date') == inp.getAttribute('data-date')){
+        hoursInp.disabled = false;
+      }
+    }
+  }
+}
+
+//------------------------------------------------------------------------------------
+
+/*
+  Esta funcion es para procesar el listado de dias que se agregaran por
+  el dia clickeado en el calendario mostrando la lista de cursos
+*/
+
+function processDay(dataElement,coursesObj){
+
+  console.log(dataElement);
+  let curDateDiv = dataElement['element'].getAttribute('data-el-date').split(',');
+  //document.querySelector('#')
+  console.log(curDateDiv,coursesObj);
 
 }

@@ -1,6 +1,6 @@
 function renderCalendar(...f){
 
-    changeMonth(new Date(year + f[0],month + f[1]));
+    printMonth(new Date(year + f[0],month + f[1]));
   
     let i = 0;
     let prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
@@ -35,7 +35,7 @@ function renderCalendar(...f){
       let dateForDiv = new Date(year + f[0], month + f[1], i);
       element.setAttribute('data-el-date',dateForDiv.toLocaleDateString());
   
-      let day_courses = if_there_are_courses_that_day(dateForDiv,f[2]);
+      let day_courses = if_there_are_courses_that_day(dateForDiv,f[2],element);
 
       i++;
       prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
@@ -43,3 +43,5 @@ function renderCalendar(...f){
     }
   
   }
+
+getAPIToday();

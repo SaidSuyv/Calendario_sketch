@@ -46,3 +46,34 @@ function setAPIDinamicDate(date,data,action){
     });
     
 }
+
+//-------------------------------------------------------------------------------------
+
+/*
+  Esta funcion pide datos para hacer un listado de los cursos
+*/
+
+function getAPIForCoursesListation(objData){
+  
+  $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+    
+    function (courses) {
+
+      console.log(courses);
+
+      switch(objData.action){
+
+        case 'forDayList':
+          processDay(objData.data,courses);
+          break;
+
+        case 'ReadOnly':
+          break;
+
+      }
+
+    }
+
+  );
+
+}
