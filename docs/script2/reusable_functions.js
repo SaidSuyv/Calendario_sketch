@@ -242,15 +242,169 @@ function disableHours(evt){
 //------------------------------------------------------------------------------------
 
 /*
+
+  Esta funcion regresa el mes en numero
+
+*/
+
+function whichMonthIsIt(monthStr){
+
+  let arrMonths = {
+    January:0,
+    February:1,
+    March:2,
+    April:3,
+    May:4,
+    June:5,
+    July:6,
+    August:7,
+    September:8,
+    October:9,
+    November:10,
+    December:11
+  };
+
+  for(let monthObj in arrMonths){
+
+    if(monthObj == monthStr){
+      return arrMonths[monthObj];
+    }
+
+  };
+
+}
+
+//------------------------------------------------------------------------------------
+
+
+/* ESTA FUNCION VERIFICA QUE CURSOS ESTAN ASIGNADOS AL DIA */
+
+function cursos_coinciden_dia_actual(lista_de_cursos, fecha_actual){
+
+  let cursos_que_coinciden = [];
+
+  for(let curso of lista_de_cursos){
+
+    let dias_disponibles = JSON.parse(curso.course_schedule);
+
+    for(let dia of dias_disponibles){
+ 
+      let mes_fecha_curso = whichMonthIsIt(dia.month) + 1;
+
+      if(
+
+        dia.date == fecha_actual[0] &&
+        mes_fecha_curso == fecha_actual[1] &&
+        dia.year == fecha_actual[2]
+
+      ){
+
+        cursos_que_coinciden.push(curso);
+        break;
+
+      }
+      
+    }
+
+  }
+
+  return cursos_que_coinciden;
+
+}
+
+
+//------------------------------------------------------------------------------------
+
+/*
   Esta funcion es para procesar el listado de dias que se agregaran por
   el dia clickeado en el calendario mostrando la lista de cursos
 */
 
 function processDay(dataElement,coursesObj){
 
-  console.log(dataElement);
-  let curDateDiv = dataElement['element'].getAttribute('data-el-date').split(',');
-  //document.querySelector('#')
-  console.log(curDateDiv,coursesObj);
+  let curDateDiv = dataElement['element_date'].getAttribute('data-el-date').split('/');
+
+  let arrCursosDiaActual = cursos_coinciden_dia_actual(coursesObj,curDateDiv);
+   
+  /* Pone el dia en el offcanvas */
+
+  $('#offcanvasLabel_coursesList').html(
+    new Date(
+      parseInt(curDateDiv[2]),
+      parseInt(curDateDiv[1]) - 1,
+      parseInt(curDateDiv[0])
+    ).toLocaleDateString("en-US",{month:'long'}) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
+  )
+
+  console.log(curDateDiv,coursesObj); 
+  
+  //---------------------------------------------------------------------
+
+  let containerAccordion = document.querySelector('#accordionCourses');
+  let n = 1;
+  let first = false;
+
+  if(arrCursosDiaActual.length != 0){
+
+    for(let course of arrCursosDiaActual){
+
+      let accordionItem = `
+    <div class="accordion-item">
+  
+      <h2 class="accordion-header" id="course-header-${n}">
+  
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-${n}" aria-expanded="false" aria-controls="flush-collapse${n}">
+          ${course.name}
+        </button>
+  
+      </h2>
+  
+      <div id="flush-collapse-${n}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionCourses">
+              
+        <div class="accordion-body">
+        
+          <div class="row row-cols-2">
+          
+            <div class="col">
+  
+              <p><b>Schedule: </b>${course.course_start} - ${course.course_end}</p>
+  
+            </div>
+  
+            <div class="col">
+  
+              <p><b>Teacher: </b>${course.teacher}</p>
+  
+            </div>
+  
+            <div class="col">
+  
+              <p><b>Room: </b>${course.room}</p>
+  
+            </div>
+          
+          </div>
+  
+        </div>
+            
+      </div>
+  
+    </div>
+    `;
+  
+    if(!first){
+      containerAccordion.innerHTML = accordionItem;
+      first = true;
+    }else{
+      containerAccordion.innerHTML += accordionItem;
+    }
+  
+    n++;
+  
+    }
+
+  }else{
+    containerAccordion.innerHTML = '<h3>There are no courses for today.';
+  }
 
 }

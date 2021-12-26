@@ -81,30 +81,106 @@ document.querySelectorAll('.loop').forEach(inp=>{
 
 //-------------------------------------------------------------------------------------------------
 
-$('#selectLoop').click(function(ev){
-    ev.preventDefault();
-    if(ev.target.tagName == 'OPTION'){
+/*
 
-        switch(ev.target.value){
+  A continuacion, el codigo para que pueda funcionar correctamente la seleccion de loop
+  tanto en moviles como en computadoras
 
-            case 'everyday':
-                console.log(its_pressed);
-                if(its_pressed){ 
-                    $('#customBtnSelect').click(function(e){
-                        console.log(e);
-                    });
-                    //$('#customLoop').removeClass('show');
-                    its_pressed = false;
-                }
-                break;
-            case 'no-day':
-                $('#customLoop').toggleClass('show');
-                break;
-            case 'detailed':
-                its_pressed = true;
-                break;
+*/
+
+$('#selectLoop').change(function(ev){
+  
+  switch(ev.target.value){
+
+    case 'no-day':
+      loopNoDay();
+      break;
+    
+    case 'custom':
+      loopCustom();
+      break;
+
+  }
+
+});
+
+//----- FUNCIONES CODIGO LOOP -------
+
+function loopNoDay(){
+
+  let inputs_switch = document.querySelectorAll('input.av-day-inp');
+  let inputs_hours = document.querySelectorAll('input.av-day-hour-inp');
+
+  for(let input of [inputs_switch, inputs_hours]){
+
+    for(let inp of input){
+
+      switch(inp.type){
+
+        case 'checkbox':
+          inp.checked = false;
+          break;
+        case 'time':
+          inp.disabled = true;
+          break;
+
+      }
+
+    }
+
+  }
+  
+
+}
+
+function loopCustom(){
+
+  let loopInputs = document.querySelectorAll('input[name="loopDay"]');
+  let loopInputsHours = [document.querySelectorAll('input[name="allHourStart"]'),document.querySelectorAll('input[name="allHourEnd"]')];
+
+  loopInputs.forEach(inputs=>{
+
+    inputs.addEventListener('click',function(ev){
+
+      if(ev.target.checked) {
+
+        for(let inputs of loopInputsHours){
+
+          for(let inputsHour of inputs){
+
+            if(inputsHour.getAttribute('data-day') == ev.target.getAttribute('data-day')){
+              inputsHour.disabled = false;
+              break;
+            }
+  
+          }
 
         }
 
-    }
-});
+        //checked_inputs(ev.target.getAttribute('data-day'));
+      }
+      else {
+
+        for(let inputs of loopInputsHours){
+
+          for(let inputsHour of inputs){
+
+            if(inputsHour.getAttribute('data-day') == ev.target.getAttribute('data-day')){
+              inputsHour.disabled = true;
+              break;
+            }
+  
+          }
+
+        }
+
+        //unchecked_inputs(ev.target.getAttribute('data-day'));
+      }
+
+    });
+
+  });
+
+  loopInputsHours.forEach(hourInpArr=>{});
+
+}

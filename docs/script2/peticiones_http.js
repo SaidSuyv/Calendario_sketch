@@ -59,7 +59,7 @@ function getAPIForCoursesListation(objData){
     
     function (courses) {
 
-      console.log(courses);
+      //console.log(courses);
 
       switch(objData.action){
 
