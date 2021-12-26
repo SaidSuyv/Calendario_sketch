@@ -92,11 +92,17 @@ $('#selectLoop').change(function(ev){
   
   switch(ev.target.value){
 
+    case 'everyday':
+      $('#everyDayBTN').click();
+      break;
+
     case 'no-day':
+      $('#noDayBTN').click();
       loopNoDay();
       break;
     
     case 'custom':
+      $('#customBTN').click();
       loopCustom();
       break;
 
@@ -157,7 +163,7 @@ function loopCustom(){
 
         }
 
-        //checked_inputs(ev.target.getAttribute('data-day'));
+        checked_inputs(ev.target.getAttribute('data-day'),'check');
       }
       else {
 
@@ -174,7 +180,7 @@ function loopCustom(){
 
         }
 
-        //unchecked_inputs(ev.target.getAttribute('data-day'));
+        checked_inputs(ev.target.getAttribute('data-day'),'uncheck');
       }
 
     });
@@ -183,4 +189,27 @@ function loopCustom(){
 
   loopInputsHours.forEach(hourInpArr=>{});
 
+}
+
+function checked_inputs(data,status){
+  
+  let inputs_dias_dispo = document.querySelectorAll('input.av-day-inp');
+  
+  switch(status){
+    
+    case 'check':
+      
+      for(let inp of inputs){
+        
+        //if(inp.getAttribute('data-date'))  
+      
+      }
+      
+      break;
+      
+    case 'uncheck':
+      break;
+    
+  }
+  
 }
