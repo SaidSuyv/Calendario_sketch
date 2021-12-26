@@ -40,8 +40,13 @@ function setAPIDinamicDate(date,data,action){
         data: data,
         processData:false,
         contentType:false,
-        success: function () {
-            getAPIDinamicDate(date);
+        success: function (response) {
+          if(response == '1'){
+            $('#toastMessages').click();
+            setTimeout(getAPIDinamicDate(date),1000);
+          }else{
+            alert('Ha ocurrido un error.');
+          }
         }
     });
     

@@ -226,6 +226,7 @@ function disableHours(evt){
   if(!inp.checked){
     for(let hoursInp of free_days_hours_inputs){
       if(hoursInp.getAttribute('data-date') == inp.getAttribute('data-date')){
+        hoursInp.value = '';
         hoursInp.disabled = true;
       }
     }

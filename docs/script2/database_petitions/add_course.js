@@ -135,6 +135,48 @@ function loopNoDay(){
     }
 
   }
+
+  //------------------
+
+  let loopInputs = document.querySelectorAll('input[name="loopDay"]');
+  let loopInputsHours = [document.querySelectorAll('input[name="allHourStart"]'),document.querySelectorAll('input[name="allHourEnd"]')];
+
+  loopInputs.forEach(inp=>{
+    inp.checked = false;
+
+    for(let inputs of loopInputsHours){
+
+      for(let inputsHour of inputs){
+
+        if(inputsHour.getAttribute('data-day') == inp.getAttribute('data-day')){
+          inputsHour.disabled = true;
+          break;
+        }
+
+      }
+
+    }
+  });
+
+  loopInputsHours.forEach(hourInpArr=>{
+
+    hourInpArr.forEach(input=>{
+
+      input.value = '';
+
+    });
+
+  });
+
+  document.querySelectorAll('input.av-day-inp').forEach(inputs=>{
+    if(inputs.checked){
+      inputs.click();
+    }
+  });
+
+  document.querySelectorAll('input.av-day-hour-inp').forEach(inp=>{
+    inp.value = '';
+  });
   
 
 }
@@ -172,6 +214,7 @@ function loopCustom(){
           for(let inputsHour of inputs){
 
             if(inputsHour.getAttribute('data-day') == ev.target.getAttribute('data-day')){
+              inputsHour.value = '';
               inputsHour.disabled = true;
               break;
             }
@@ -187,7 +230,87 @@ function loopCustom(){
 
   });
 
-  loopInputsHours.forEach(hourInpArr=>{});
+  loopInputsHours.forEach(hourInpArr=>{
+
+    hourInpArr.forEach(input=>{
+
+      input.addEventListener('change',function(ev){
+
+        console.log(ev.target.value);
+
+        let hourParam;
+
+        if(ev.target.name.includes('Start')){
+          hourParam = 'Start';
+        }else if( ev.target.name.includes('End') ){
+          hourParam = 'End';
+        }
+
+        change_input(ev.target.getAttribute('data-day'),hourParam,ev.target.value);
+
+      });
+
+    });
+
+  });
+
+}
+
+function change_input(data,param,val){
+
+  let inputs_dias_dispo = document.querySelectorAll('input.av-day-hour-inp');
+
+  switch(param){
+    
+    case 'Start':
+
+      for(let inp of inputs_dias_dispo){
+
+        if(inp.id.includes('Start')){
+
+          let date_inp = new Date(
+            parseInt(inp.getAttribute('data-date').split('/')[2]),
+            parseInt(inp.getAttribute('data-date').split('/')[1]) - 1,
+            parseInt(inp.getAttribute('data-date').split('/')[0])
+          ).getDay();
+
+          if( whichDayIsIt(date_inp) == data ){
+
+            inp.value = val;
+
+          }
+
+        }
+
+      }
+
+      break;
+
+    case 'End':
+
+      for(let inp of inputs_dias_dispo){
+
+        if(inp.id.includes('End')){
+
+          let date_inp = new Date(
+            parseInt(inp.getAttribute('data-date').split('/')[2]),
+            parseInt(inp.getAttribute('data-date').split('/')[1]) - 1,
+            parseInt(inp.getAttribute('data-date').split('/')[0])
+          ).getDay();
+
+          if( whichDayIsIt(date_inp) == data ){
+
+            inp.value = val;
+
+          }
+
+        }
+
+      }
+      
+      break;
+
+  }
 
 }
 
@@ -199,15 +322,40 @@ function checked_inputs(data,status){
     
     case 'check':
       
-      for(let inp of inputs){
+      for(let inp of inputs_dias_dispo){
+
+        let date_inp = new Date(
+          parseInt(inp.getAttribute('data-date').split('/')[2]),
+          parseInt(inp.getAttribute('data-date').split('/')[1]) - 1,
+          parseInt(inp.getAttribute('data-date').split('/')[0])
+        ).getDay();
         
-        //if(inp.getAttribute('data-date'))  
+        if(whichDayIsIt(date_inp) == data){
+
+          inp.click();
+        }  
       
       }
       
       break;
       
     case 'uncheck':
+
+      for(let inp of inputs_dias_dispo){
+
+        let date_inp = new Date(
+          parseInt(inp.getAttribute('data-date').split('/')[2]),
+          parseInt(inp.getAttribute('data-date').split('/')[1]) - 1,
+          parseInt(inp.getAttribute('data-date').split('/')[0])
+        ).getDay();
+        
+        if(whichDayIsIt(date_inp) == data){
+
+          inp.click();
+        }  
+      
+      }
+
       break;
     
   }
