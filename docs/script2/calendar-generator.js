@@ -2,7 +2,7 @@ const father = document.querySelector('.cuadros-mes');
 
 var weekCounter = 1;
 
-for(let i = 0; i < 5; i++){
+for(let i = 0; i < 6; i++){
 
   var days_element = `
   <div class="semana-${weekCounter} d-flex my-2">

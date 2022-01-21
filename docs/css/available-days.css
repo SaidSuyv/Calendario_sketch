@@ -1,9 +1,0 @@
-.available-days{
-  max-height: 500px;
-  background: #eee;
-  overflow-y: auto;
-}
-
-div.day-btn{
-  text-align: center;
-}

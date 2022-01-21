@@ -12,7 +12,7 @@ document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(arrow=>{
                 }
                 else{
                     yr--;
-                    mnth = 0;
+                    mnth = 11;
                     getAPIDinamicDate(yr,mnth);
                 }
 
@@ -26,7 +26,7 @@ document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(arrow=>{
                 }
                 else{
                     yr++;
-                    mnth = -11;
+                    mnth = 0;
                     getAPIDinamicDate(yr,mnth);
                 }
 

@@ -284,11 +284,11 @@ function cursos_coinciden_dia_actual(lista_de_cursos, fecha_actual){
 
   let cursos_que_coinciden = [];
 
-  for(let curso of lista_de_cursos){
+  for(let curso of lista_de_cursos){  // for por curso
 
-    let dias_disponibles = JSON.parse(curso.course_schedule);
+    let dias_disponibles = JSON.parse(curso.course_schedule);   // se obtiene el listado de dias
 
-    for(let dia of dias_disponibles){
+    for(let dia of dias_disponibles){   // verificacion por dia
  
       let mes_fecha_curso = whichMonthIsIt(dia.month) + 1;
 
@@ -326,7 +326,7 @@ function processDay(dataElement,coursesObj){
   let curDateDiv = dataElement['element_date'].getAttribute('data-el-date').split('/');
 
   let arrCursosDiaActual = cursos_coinciden_dia_actual(coursesObj,curDateDiv);
-   
+  
   /* Pone el dia en el offcanvas */
 
   $('#offcanvasLabel_coursesList').html(
@@ -405,7 +405,7 @@ function processDay(dataElement,coursesObj){
     }
 
   }else{
-    containerAccordion.innerHTML = '<h3>There are no courses for today.';
+    containerAccordion.innerHTML = '<h3>There are no courses for today.</h3>';
   }
 
 }
