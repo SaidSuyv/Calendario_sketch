@@ -6,11 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- BOOTSTRAP CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js" integrity="sha512-6ORWJX/LrnSjBzwefdNUyLCMTIsGoNP6NftMy2UAm1JBm6PRZCO1d7OHBStWpVFZLO+RerTvqX/Z9mBFfCJZ4A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- OWN CSS -->
   <style>
@@ -22,7 +23,7 @@
   
     }
   
-    div.dia {
+    div.calendario div.dia {
   
       min-width: calc(100% / 7);
   
@@ -38,7 +39,7 @@
   
     }
   
-    div.today {
+    div.cuadros-mes div.today {
   
       background: #b3eaf4;
   
@@ -62,7 +63,7 @@
       margin-bottom: .5rem;
     }
   
-    div.cuadros-mes div.courses {
+    div.cuadros-mes div.courses_disclaimer {
   
       width: 10px;
       height: 10px;
@@ -70,23 +71,15 @@
       background: #0438ea;
   
     }
-  
-    .centered {
-      text-align: center;
-    }
-  
-    /*
-  -- available days
-  */
-  
-    .available-days {
-      max-height: 500px;
-      background: #eee;
-      overflow-y: auto;
-    }
-  
-    div.day-btn {
-      text-align: center;
+
+    div.titulo-del-cuadro div.calendar_arrow{
+      cursor: pointer;
+
+      min-width: 50px;
+      height: 30px;
+
+      display: grid;
+      place-items: center;
     }
   </style>
 
@@ -100,10 +93,24 @@
 
     <div class="calendario m-auto">
 
-      <div class="titulo-del-cuadro d-flex justify-content-around align-items-center my-4">
-        <i class="fas fa-chevron-left"></i>
-        <h1 class="h1">{nombre del mes}</h1>
-        <i class="fas fa-chevron-right"></i>
+      <div class="titulo-del-cuadro d-flex justify-content-between align-items-center my-4">
+
+        <div class="calendar_arrow">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+
+        <h1 class="h1 m-0">{nombre del mes}</h1>
+
+        <div class="calendar_arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+      </div>
+
+      <div class="extra-buttons my-3">
+      
+        <button type="button" class="btn btn-primary" id="go_today">Today</button>
+      
       </div>
 
       <div class="dias d-flex">
@@ -136,615 +143,45 @@
 
     </div>
 
-    <!-- <div class="my-4 d-flex justify-content-around">
-      <button type="button" name="button" id="buttonNewCourse" class="btn btn-dark bg-dark" data-bs-toggle="modal" data-bs-target="#modalNewCourse">New Course</button>
-      <button type="button" name="button" id="buttonDeleteCourse" class="btn btn-dark bg-dark" data-bs-toggle="modal" data-bs-target="#modalDeleteCourse">Delete Course</button>
-      <button class="btn btn-dark bg-dark" id="buttonEditCourse" type="button" name="button" data-bs-toggle="modal" data-bs-target="#allCoursesList">Edit courses</button>
-    </div> -->
-
   </div>
 
   <!-- OFFCANVAS LISTA DE CURSOS POR DIA SELECCIONADO -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasLabel">
 
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasLabel_coursesList">{date}</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasExample" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body">
-
-      <h5 class="offcanvas-subtitle" id="offcanvasLabel">Your courses</h5>
-      <hr>
-
-      <div class="courses-container accordion accordion-flush" id="accordionCourses"></div>
-
-    </div>
-
-  </div>
-
-  <div class="modal fade" tabindex="-1" id="modalNewCourse">
+  <div class="modal fade" id="offcanvasExample" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 
-      <form class="modal-content" id="addCourseForm">
+      <div class="modal-content">
 
         <div class="modal-header">
 
-          <h5 class="modal-title">Add new course</h5>
-          <button type="button" id="close_new_course" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="offcanvas-title" id="offcanvasLabel_coursesList">{date}</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
 
         </div>
 
         <div class="modal-body">
-          
-          <div class="container">
-
-            <div class="mb-3">
-              <label for="courseName" class="form-label">Course's name</label>
-              <input type="text" class="form-control new-course-form" id="newCourseName" name="courseName">
-            </div>
-    
-            <div class="row g-3 mb-3">
-              <div class="col-6">
-                <label for="courseStart" class="form-label">Start</label>
-                <input type="date" class="form-control new-course-form" id="newCourseStart" name="courseStart" placeholder="dd/mm/aaaa">
-              </div>
-              <div class="col-6">
-                <label for="courseEnd" class="form-label">End</label>
-                <input type="date" class="form-control new-course-form" id="newCourseEnd" name="courseEnd" placeholder="dd/mm/aaaa">
-              </div>
-            </div>
-    
-            <div class="mb-3">
-              <label for="courseRoom" class="form-label">Course's Classroom</label>
-              <input type="number" class="form-control new-course-form" id="newCourseRoom" name="courseRoom" min="0" max="999">
-            </div>
-    
-            <div class="mb-3">
-              <label for="courseTeacher" class="form-label">Teacher's Name</label>
-              <input type="text" class="form-control new-course-form" id="newCourseTeacher" name="courseTeacher">
-            </div>
-    
-            <div class="row mb-3 justify-content-center">
-    
-              <h6 class="col-12 mb-3">Loop:</h6>
-    
-              <div class="col-12 row">
-
-                <select class="form-select mb-3" id="selectLoop">
-                  <option value="everyday">Every day</option>
-                  <option value="no-day">No day</option>
-                  <option value="custom">Custom</option>
-                </select>
-                
-                <div class="d-none">
-                  
-                  <button  class="collapsed" id="everyDayBTN" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEveryday" aria-expanded="true" aria-controls="collapseEveryday"></button>
-                  <button id="noDayBTN" class="collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNoDay" aria-expanded="true" aria-controls="collapseNoDay"></button>
-                  <button class="collapsed" id="customBTN" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustom" aria-expanded="false" aria-controls="collapseCustom"></button>
-                  
-                </div>
-
-                <div class="accordion p-0" id="accordionTopics">
-
-                  <div class="accordion-item border-0">
-
-                    <div id="collapseEveryday" class="accordion-collapse collapse show" aria-labelledby="accordionTopics" data-bs-parent="#accordionTopics">
-                      
-                      <div class="accordion-body border border-2 rounded-3">
-                        
-                        <div class="row">
-
-                          <div class="col-4 d-flex align-items-center justify-content-center flex-column">
-
-                            <p><b>Start</b></p>
-                            <input type="time" id="allHourStart">
-
-                          </div>
-
-
-                          <div class="col-4 d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-4 d-flex align-items-center justify-content-center flex-column">
-
-                            <p><b>End</b></p>
-                            <input type="time" id="allHourEnd">
-
-                          </div>
-
-                        </div>
-                      
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="accordion-item border-0">
-                    <div id="collapseNoDay" class="accordion-collapse collapse" aria-labelledby="accordionTopics" data-bs-parent="#accordionTopics">
-                      <div class="accordion-body border border-2 rounded-3">
-                        <span>Every available day had been disabled</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="accordion-item border-0">
-                    <div id="collapseCustom" class="accordion-collapse collapse" aria-labelledby="accordionTopics" data-bs-parent="#accordionTopics">
-                      <div class="accordion-body border border-2 rounded-3 row justify-content-center">
-                        
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="monLoop" name="loopDay" data-day="Mon">
-                            <label class="form-check-label" for="monLoop">Mon</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Mon">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Mon">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="tueLoop" name="loopDay" data-day="Tue">
-                            <label class="form-check-label" for="tueLoop">Tue</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Tue">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Tue">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="wedLoop" name="loopDay" data-day="Wed">
-                            <label class="form-check-label" for="wedLoop">Wed</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Wed">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Wed">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="thuLoop" name="loopDay" data-day="Thu">
-                            <label class="form-check-label" for="thuLoop">Thu</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Thu">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Thu">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="friLoop" name="loopDay" data-day="Fri">
-                            <label class="form-check-label" for="friLoop">Fri</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Fri">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Fri">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="satLoop" name="loopDay" data-day="Sat">
-                            <label class="form-check-label" for="satLoop">Sat</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Sat">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Sat">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                        <div class="my-1 row justify-content-between">
-
-                          <div class="col-auto row align-items-center switch form-switch">
-
-                            <input class="form-check-input" type="checkbox" role="switch" id="sunLoop" name="loopDay" data-day="Sun">
-                            <label class="form-check-label" for="sunLoop">Sun</label>
-
-                          </div>
-
-                          <div class="col-8 row">
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourStart" disabled data-day="Sun">
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <span><b>-</b></span>
-
-                          </div>
-
-
-                          <div class="col-auto d-flex align-items-center justify-content-center">
-
-                            <input type="time" name="allHourEnd" disabled data-day="Sun">
-
-                          </div>
-
-                        </div>
-
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
-    
-            </div>
-    
-            <h6 class="mb-3">Select the available days:</h6>
-    
-            <div class="mb-3 available-days-new-course"></div>
-    
-          </div>
-
-        </div>
-
-        <div class="modal-footer">
-
+        
+          <h5 class="offcanvas-subtitle" id="offcanvasLabel">Your courses</h5>
           <hr>
-
-          <div class="buttons d-flex justify-content-center mb-3">
-
-            <button class="btn btn-dark bg-dark" type="submit" role="button">Add Course</button>
-
-          </div>
+        
+          <div class="courses-container accordion" id="accordionCourses"></div>
 
         </div>
 
-      </form>
+      </div>
 
     </div>
 
   </div>
 
-  <div class="modal fade" tabindex="-1" id="modalEditCourse">
-
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-
-      <form class="modal-content" id="updateCourseForm">
-
-        <div class="modal-header">
-
-          <button type="button" class="btn fas fa-chevron-left" data-bs-dismiss="modal" aria-label="Back" data-bs-toggle="modal" data-bs-target="#allCoursesList"></button>
-          <h5 class="modal-title">Edit your course</h5>
-
-        </div>
-
-        <div class="modal-body">
-          
-          <div class="container">
-
-            <div class="mb-3">
-              <label for="courseName" class="form-label">Course's name</label>
-              <input type="text" class="form-control edit-course-form" id="courseNameEdit" name="courseNameEdit">
-            </div>
-    
-            <div class="row g-3 mb-3">
-              <div class="col-6">
-                <label for="courseStart" class="form-label">Start</label>
-                <input type="date" class="form-control edit-course-form" id="courseStartEdit" name="courseStartEdit" placeholder="dd/mm/aaaa">
-              </div>
-              <div class="col-6">
-                <label for="courseEnd" class="form-label">End</label>
-                <input type="date" class="form-control edit-course-form" id="courseEndEdit" name="courseEndEdit" placeholder="dd/mm/aaaa">
-              </div>
-            </div>
-    
-            <div class="mb-3">
-              <label for="courseRoom" class="form-label">Course's Classroom</label>
-              <input type="number" class="form-control edit-course-form" id="courseRoomEdit" name="courseRoomEdit" min="0" max="999">
-            </div>
-    
-            <div class="mb-3">
-              <label for="courseTeacher" class="form-label">Teacher's Name</label>
-              <input type="text" class="form-control edit-course-form" id="courseTeacherEdit" name="courseTeacherEdit">
-            </div>
-    
-            <div class="row g-0 mb-3">
-    
-              <h6 class="col-12">Loop:</h6>
-    
-              <div class="col-12 d-flex g-0 justify-content-evenly align-items-center">
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Mon</p>
-                  <input class="form-check-input loop" type="checkbox" id="Mon" checked>
-    
-                </div>
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Tue</p>
-                  <input class="form-check-input loop" type="checkbox" id="Tue" checked>
-    
-                </div>
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Wed</p>
-                  <input class="form-check-input loop" type="checkbox" id="Wed" checked>
-    
-                </div>
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Thu</p>
-                  <input class="form-check-input loop" type="checkbox" id="Thu" checked>
-    
-                </div>
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Fri</p>
-                  <input class="form-check-input loop" type="checkbox" id="Fri" checked>
-    
-                </div>
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Sat</p>
-                  <input class="form-check-input loop" type="checkbox" id="Sat" checked>
-    
-                </div>
-    
-                <div class="day-btn">
-    
-                  <p class="m-0">Sun</p>
-                  <input class="form-check-input loop" type="checkbox" id="Sun" checked>
-    
-                </div>
-    
-              </div>
-    
-            </div>
-    
-            <h6 class="mb-3">Select the available days:</h6>
-    
-            <div class="mb-3 available-days-edit"></div>
-    
-          </div>
-
-        </div>
-
-        <div class="modal-footer">
-
-          <hr>
-
-          <div class="buttons d-flex justify-content-center mb-3">
-
-            <button class="btn btn-dark bg-dark" type="submit" role="button">Update Course</button>
-
-          </div>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-  <div class="modal fade" tabindex="-1" id="modalDeleteCourse">
-
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-
-      <form class="modal-content" id="deleteCourseForm">
-
-        <div class="modal-header">
-          <h5 class="modal-title">Courses List</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <div class="modal-body">
-
-            <div class="accordion accordion-flush" id="accordionCoursesForDelete"></div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary m-auto" data-bs-dismiss="modal">Cancel</button>
-          <button id="submitDeletedCourses" type="submit" class="btn btn-danger m-auto" data-bs-dismiss="modal">Delete courses</button>
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-  <div class="modal fade" tabindex="-1" id="allCoursesList">
-
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-
-      <form class="modal-content" id="coursesList">
-
-        <div class="modal-header">
-          <h5 class="modal-title">Courses List</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <div class="modal-body">
-
-            <div class="accordion accordion-flush" id="accordionCoursesForList"></div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary m-auto" data-bs-dismiss="modal">Cancel</button>
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  
   <!-- RENDERIZA EL CALENDARIO DINAMICAMENTE -->
   <script type="text/javascript" charset="utf-8">
     const father = document.querySelector('.cuadros-mes');
@@ -755,25 +192,25 @@
 
       var days_element = `
     <div class="semana-${weekCounter} d-flex my-2">
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
-      <div class="dia" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+      <div class="dia">
         <p class="texto-dia">{n}</p>
       </div>
     </div>
@@ -814,125 +251,139 @@
   </script>
 
   <!-- DEFINE FUNCIONES DE LAS PETICIONES HTTP AL SERVIDOR -->
-  <script src="script2/peticiones_http.js"></script>
-
-  <!-- HACE UN RENDERIZADO CON TODA LA INFORMACION COMO PRODUCTO FINAL -->
   <script type="text/javascript" charset="utf-8">
-    function renderCalendar(...f) {
+    function getAPIForCoursesListation(objData) {
 
-      // Muestra el mes actual
-      printMonth(new Date(year + f[0], month + f[1]));
+        $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
 
-      let i = 0;
-      // Obtiene el ultimo dia del mes anterior al actual
-      let prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
-      // Verifica que dia es
-      let weekDay = whichDayIsIt(prevLastDay.toString());
+          function (courses) {
 
-      // Mientras no se Lunes, retrocede un dia hasta que sea lunes
-      while (weekDay != 'Mon') {
+            //console.log(courses);
 
-        if (weekDay == 'Sun') { i++; break; }
-        i--;
-        prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
-        weekDay = whichDayIsIt(prevLastDay.toString());
+            switch (objData.action) {
 
-      }
+              case 'forDayList':
+                processDay(objData.data, courses);
+                break;
 
-      prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
+            }
 
-      let current_month = month + f[1];
+          }
 
-      // Empieza con el primer dia
-      for (let element of dias) {
-
-        let ele = new Date(year + f[0], month + f[1], i);
-        ele = [ele.getFullYear(), ele.getMonth(), ele.getDate()];
-
-        // Si el mes del dia objetivo del calendario no es igual al mes actual, establecer como "fuera del mes"
-        // Si no, retira lo establecido
-        if (ele[1] != current_month) element.classList.add('out-of-month');
-        else element.classList.remove('out-of-month');
-
-        // Si el dia objetivo es hoy, establecer como "hoy", sino, retira lo establecido
-        if (ele[0] == today[0] && ele[1] == today[1] && ele[2] == today[2]) element.classList.add('today');
-        else element.classList.remove('today');
-
-        element.children[0].innerHTML = prevLastDay;  // Muestra el dia objetivo
-
-        let dateForDiv = new Date(year + f[0], month + f[1], i);
-        element.setAttribute('data-el-date', dateForDiv.toLocaleDateString()); // Deja la informacion del dia en el elemento
-
-        let day_courses = if_there_are_courses_that_day(dateForDiv, f[2], element);
-
-        i++;
-        prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
+        );
 
       }
+
+    function make_request_for_courses(dias_calendario) {
+
+      $.getJSON("http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php",
+        function (data) {
+          for (let dia of dias_calendario) {
+            let date_dia = dia.getAttribute('data-el-date').split('/').map(e => { return parseInt(e) });
+            let cursos_coinciden = [];
+            for (let curso of data) {
+              if (curso.group_of_courses != '0') {
+                for (let cursos_individuales of curso.elements) {
+                  let curso_date_started = cursos_individuales.started_date.split('-').map(e => { return parseInt(e) }).reverse();
+                  let curso_date_ended = cursos_individuales.ended_date.split('-').map(e => { return parseInt(e) }).reverse();
+                  if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_started[1]) {
+                    //console.log('start es meno a end y fecha actual esta en started');
+                    let dia_end = new Date(curso_date_ended[2], curso_date_ended[1], 0).getDate();
+                    let limite = curso_date_ended[0];
+                    for (let i = 0; i < limite; i++) {
+                      curso_date_ended[0] = dia_end;
+                      dia_end++;
+                    }
+                  }//else console.log('start no es menor a end o fecha actual no esta en started');
+                  if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_ended[1]) {
+                    //console.log('start es menos a end y fecha actual esta en ended');
+                    let dia_start = new Date(curso_date_started[2], curso_date_started[1], 1).getDate();
+                    let verifier = new Date(curso_date_started[2], curso_date_started[1], 0).getDate();
+                    let limite = curso_date_started[0];
+                    do {
+                      curso_date_started[0] = dia_start;
+                      dia_start -= 1;
+                      verifier -= 1;
+                    }
+                    while (verifier != limite);
+                  }//else console.log('start no es menor a end o fecha actual no esta en ended');
+                  //console.log(curso_date_started);
+                  //console.log(curso_date_ended);
+                  //console.log(date_dia);
+                  //console.log(cursos_individuales);
+                  // verifica año
+                  if (
+                    (date_dia[2] >= curso_date_started[2] && date_dia[2] <= curso_date_ended[2]) &&
+                    (date_dia[1] >= curso_date_started[1] && date_dia[1] <= curso_date_ended[1]) &&
+                    (date_dia[0] >= curso_date_started[0] && date_dia[0] <= curso_date_ended[0])
+                  ) {
+                    cursos_coinciden.push(cursos_individuales);
+                  }
+                }
+                break;
+              } else {
+                let curso_date_started = curso.started_date.split('-').map(e => { return parseInt(e) }).reverse();
+                let curso_date_ended = curso.ended_date.split('-').map(e => { return parseInt(e) }).reverse();
+                if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_started[1]) {
+                  let dia_end = new Date(curso_date_ended[2], curso_date_ended[1], 0).getDate();
+                  let limite = curso_date_ended[0];
+                  for (let i = 0; i < limite; i++) {
+                    curso_date_ended[0] = dia_end;
+                    dia_end++;
+                  }
+                }
+                if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_ended[1]) {
+                  let dia_start = new Date(curso_date_started[2], curso_date_started[1], 1).getDate();
+                  let verifier = new Date(curso_date_started[2], curso_date_started[1], 0).getDate();
+                  let limite = curso_date_started[0];
+                  do {
+                    curso_date_started[0] = dia_start;
+                    dia_start -= 1;
+                    verifier -= 1;
+                  }
+                  while (verifier != limite);
+                }
+                //console.log(curso_date_started);
+                //console.log(curso_date_ended);
+                //console.log(date_dia);
+                //console.log(curso);
+                // verifica año
+                if (
+                  (date_dia[2] >= curso_date_started[2] && date_dia[2] <= curso_date_ended[2]) &&
+                  (date_dia[1] >= curso_date_started[1] && date_dia[1] <= curso_date_ended[1]) &&
+                  (date_dia[0] >= curso_date_started[0] && date_dia[0] <= curso_date_ended[0])
+                ) {
+                  cursos_coinciden.push(curso);
+                }
+              }
+            }
+
+            // añadir el puntito
+            if (cursos_coinciden.length > 0) {
+
+              dia.setAttribute('data-has-courses', 'true');
+              dia.setAttribute('data-courses-list', cursos_coinciden.join(','));
+
+              if (dia.children.length > 1) dia.removeChild(dia.children[1]);
+              dia.innerHTML += '<div class="courses_disclaimer m-auto mb-1"></div>';
+
+            } else {
+
+              dia.setAttribute('data-has-courses', 'false');
+              dia.removeAttribute('data-courses-list');
+
+              if (dia.children.length > 1) dia.removeChild(dia.children[1]);
+
+            }
+          }
+        }
+      );
 
     }
-
-    getAPIToday();
   </script>
 
   <!-- FUNCIONES QUE SE PUEDEN REUTILIZAR, TODAS LAS FUNCIONALIDADES EN CONJUNTO -->
   <script type="text/javascript" charset="urf-8">
-    /*
-    Esta funcion sirve para regresar los nombres de cada
-    curso vinculados al dia recibido
- 
-    date_cur_element : Fecha dinamica
-    db : array con los cursos
-    return : [curso.name,curso.name]
- 
-    además añade atributos data con estos datos
- 
-    data-has-courses : true/false
-    data-courses-list : [curso.name,curso.name,...]
-*/
-
-    function if_there_are_courses_that_day(date_cur_element, db, element) {
-
-      let courses_for_day = [];
-      let course_name;
-
-      for (let course of db) {
-
-        course_name = course.name;
-
-        let schedule = JSON.parse(course.course_schedule);
-
-        for (let schedule_day of schedule) {
-          if (
-            date_cur_element.getDate().toString() == schedule_day.date &&
-            date_cur_element.toLocaleDateString("en-US", { month: 'long' }) == schedule_day.month &&
-            date_cur_element.getFullYear().toString() == schedule_day.year
-          ) {
-            courses_for_day.push(course_name);
-            break;
-          }
-        }
-
-      }
-
-      if (courses_for_day.length > 0) {
-
-        element.setAttribute('data-has-courses', 'true');
-        element.setAttribute('data-courses-list', courses_for_day.join(','));
-
-        if (element.children.length > 1) element.removeChild(element.children[1]);
-        element.innerHTML += '<div class="courses m-auto mb-1"></div>';
-
-      } else {
-
-        element.setAttribute('data-has-courses', 'false');
-        element.removeAttribute('data-courses-list');
-
-        if (element.children.length > 1) element.removeChild(element.children[1]);
-
-      }
-
-    }
 
     //------------------------------------------------------------------------------------
 
@@ -961,196 +412,7 @@
 
     function printMonth(date) {
 
-      if (date.getFullYear() == today[0]) monthName.innerHTML = date.toLocaleDateString("en-US", { month: 'long' });
-      else monthName.innerHTML = date.toLocaleDateString("en-US", { month: 'long', year: 'numeric' });
-
-    }
-
-    //------------------------------------------------------------------------------------
-
-    /*
-    Esta funcion recoge todas la informacion y la regresa de manera de JSON stringified para que se pueda mandar
-    correctamente
-    */
-
-    function separateDatesData(nodeList) {
-
-      let arrayDates = [];
-
-      for (let inputSwitch of nodeList) {
-
-        if (inputSwitch.checked) {
-
-          let inpDate = inputSwitch.getAttribute('data-date').split('/').reverse().map(num => { return parseInt(num) });
-          let objInp = { year: inpDate[0], month: new Date(inpDate[0], inpDate[1] - 1, inpDate[2]).toLocaleDateString("en-US", { month: 'long' }), date: inpDate[2] };
-
-          for (let inputHours of nodeList) {
-
-            if (inputHours.className.includes('form-time-input')) {
-
-              if (inputHours.getAttribute('data-date') == inputSwitch.getAttribute('data-date')) {
-
-                switch (inputHours.name.split('_')[1]) {
-                  case 'hourStart':
-                    objInp['hourStart'] = inputHours.value;
-                    break;
-                  case 'hourEnd':
-                    objInp['hourEnd'] = inputHours.value;
-                    break;
-                }
-
-              }
-
-            }
-
-          }
-          arrayDates.push(objInp);
-        }
-
-      }
-
-      return JSON.stringify(arrayDates);
-
-    }
-
-    //------------------------------------------------------------------------------------
-
-    /*
-    Esta funcion mandar cada div para la lista de dias disponibles al añadir o editar un curso
-    */
-
-    function send_data_for_available_days(limitsOfCourse) {
-
-      let dateStart = limitsOfCourse['start'][2];
-
-      if (
-        parseInt(limitsOfCourse['end'][0]) >= parseInt(limitsOfCourse['start'][0]) &&
-        parseInt(limitsOfCourse['end'][1]) >= parseInt(limitsOfCourse['start'][1]) &&
-        parseInt(limitsOfCourse['end'][2]) >= parseInt(limitsOfCourse['start'][2])
-      ) {
-        while (new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, parseInt(dateStart)).toLocaleDateString() != new Date(parseInt(limitsOfCourse['end'][0]), parseInt(limitsOfCourse['end'][1]) - 1, parseInt(limitsOfCourse['end'][2]) + 1).toLocaleDateString()) {
-
-          let currentMonth = new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, parseInt(dateStart)).toLocaleDateString("en-US", { month: 'long' });
-
-          let day_htmlElement = `
-    <div class="av-day my-3 container d-flex justify-content-around align-items-center flex-wrap gy-3">
-  
-      <div class="form-check form-switch">
-        <input class="form-check-input av-day-inp new-course-form" type="checkbox" role="switch" data-date="${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).toLocaleDateString()}" id="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}" name='${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDay()}' checked onclick="disableHours(event)">
-        <label class="form-check-label" for="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}">${currentMonth} ${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}</label>
-      </div>
-  
-      <div class="hours-inp d-flex gx-3 align-items-center">
-  
-        <div>
-          <input type="time" class="form-time-input av-day-hour-inp new-course-form" data-date="${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).toLocaleDateString()}" id="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}_hourStart" name="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}_hourStart">
-        </div>
-        <div class="mx-3"><p class="m-auto">-</p></div>
-        <div>
-          <input type="time" class="form-time-input av-day-hour-inp new-course-form" data-date="${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).toLocaleDateString()}" id="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}_hourEnd" name="${currentMonth}${new Date(parseInt(limitsOfCourse['start'][0]), parseInt(limitsOfCourse['start'][1]) - 1, dateStart).getDate()}_hourEnd">
-        </div>
-  
-      </div>
-  
-    </div>
-    `;
-
-          if (!dayAlreadyWrote) {
-            document.querySelector('.available-days-new-course').innerHTML = day_htmlElement;
-            dayAlreadyWrote = true;
-          } else document.querySelector('.available-days-new-course').innerHTML += day_htmlElement;
-          dateStart++;
-        }
-        dayAlreadyWrote = false;
-        document.querySelectorAll('.loop').forEach(inp => { inp.checked = false });
-        document.querySelectorAll('input.av-day-inp').forEach(inp => { inp.checked = false });
-        document.querySelectorAll('input.av-day-hour-inp').forEach(inp => { inp.disabled = true });
-      } else { alert('Please choose a correct interval of dates') };
-
-    }
-
-    /*
-    Esta funcion es para analizar los dias limitsOfCourse para mandar cada uno de los dias
-    disponibles al añadir un curso
-    */
-
-    function analize_date_input(id, value) {
-
-      switch (id) {
-        case 'newCourseStart':
-          limites['start'] = value.split('-');
-          break;
-        case 'newCourseEnd':
-          limites['end'] = value.split('-');
-          break;
-      }
-
-      if (Object.keys(limites).length == 2) {
-        send_data_for_available_days(limites);
-      }
-
-    }
-
-    //------------------------------------------------------------------------------------
-
-    /*
-    Esta funcion es para desactivar el dia dentro del rango del curso para que ese dia en
-    especifico no sea almacenado
-    */
-
-    function disableHours(evt) {
-      let inp = evt.target;
-      let free_days_hours_inputs = document.querySelectorAll('input.av-day-hour-inp');
-
-      if (!inp.checked) {
-        for (let hoursInp of free_days_hours_inputs) {
-          if (hoursInp.getAttribute('data-date') == inp.getAttribute('data-date')) {
-            hoursInp.value = '';
-            hoursInp.disabled = true;
-          }
-        }
-
-      } else {
-        for (let hoursInp of free_days_hours_inputs) {
-          if (hoursInp.getAttribute('data-date') == inp.getAttribute('data-date')) {
-            hoursInp.disabled = false;
-          }
-        }
-      }
-    }
-
-    //------------------------------------------------------------------------------------
-
-    /*
-    
-    Esta funcion regresa el mes en numero
-    
-    */
-
-    function whichMonthIsIt(monthStr) {
-
-      let arrMonths = {
-        January: 0,
-        February: 1,
-        March: 2,
-        April: 3,
-        May: 4,
-        June: 5,
-        July: 6,
-        August: 7,
-        September: 8,
-        October: 9,
-        November: 10,
-        December: 11
-      };
-
-      for (let monthObj in arrMonths) {
-
-        if (monthObj == monthStr) {
-          return arrMonths[monthObj];
-        }
-
-      };
+      monthName.innerHTML = date.toLocaleDateString('en', { month: 'long', year: 'numeric' });
 
     }
 
@@ -1161,34 +423,85 @@
 
     function cursos_coinciden_dia_actual(lista_de_cursos, fecha_actual) {
 
-      let cursos_que_coinciden = [];
-
-      for (let curso of lista_de_cursos) {  // for por curso
-
-        let dias_disponibles = JSON.parse(curso.course_schedule);   // se obtiene el listado de dias
-
-        for (let dia of dias_disponibles) {   // verificacion por dia
-
-          let mes_fecha_curso = whichMonthIsIt(dia.month) + 1;
-
-          if (
-
-            dia.date == fecha_actual[0] &&
-            mes_fecha_curso == fecha_actual[1] &&
-            dia.year == fecha_actual[2]
-
-          ) {
-
-            cursos_que_coinciden.push(curso);
+      console.log(lista_de_cursos);
+      fecha_actual = fecha_actual.map(e=>{return parseInt(e)});
+      let cursos_coinciden = [];
+      for(let curso of lista_de_cursos){
+          if(curso.group_of_courses != '0'){
+            for(let cursos_individuales of curso.elements){
+              let curso_date_started = cursos_individuales.started_date.split('-').map(e=>{return parseInt(e)}).reverse();
+              let curso_date_ended = cursos_individuales.ended_date.split('-').map(e=>{return parseInt(e)}).reverse();
+              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_started[1]) {
+                //console.log('start es meno a end y fecha actual esta en started');
+                let dia_end = new Date(curso_date_ended[2],curso_date_ended[1],0).getDate();
+                let limite = curso_date_ended[0];
+                for(let i = 0; i < limite; i++){
+                  curso_date_ended[0] = dia_end;
+                  dia_end++;
+                }
+              }//else console.log('start no es menor a end o fecha actual no esta en started');
+              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_ended[1]){
+                //console.log('start es menos a end y fecha actual esta en ended');
+                let dia_start = new Date(curso_date_started[2],curso_date_started[1],1).getDate();
+                let verifier = new Date(curso_date_started[2], curso_date_started[1],0).getDate();
+                let limite = curso_date_started[0];
+                do{
+                  curso_date_started[0] = dia_start;
+                  dia_start-=1;
+                  verifier-=1;
+                }
+                while(verifier != limite);
+              }
+              //console.log(curso_date_started);
+              //console.log(curso_date_ended);
+              //console.log(date_dia);
+              //console.log(cursos_individuales);
+              // verifica año
+              if(
+                (fecha_actual[2] >= curso_date_started[2] && fecha_actual[2] <= curso_date_ended[2]) &&
+                (fecha_actual[1] >= curso_date_started[1] && fecha_actual[1] <= curso_date_ended[1]) &&
+                (fecha_actual[0] >= curso_date_started[0] && fecha_actual[0] <= curso_date_ended[0])
+                ){
+                  cursos_coinciden.push(cursos_individuales);
+                }
+            }
             break;
-
+          }else{
+            let curso_date_started = curso.started_date.split('-').map(e=>{return parseInt(e)}).reverse();
+              let curso_date_ended = curso.ended_date.split('-').map(e=>{return parseInt(e)}).reverse();
+              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_started[1]) {
+                //console.log('start es meno a end y fecha actual esta en started');
+                let dia_end = new Date(curso_date_ended[2],curso_date_ended[1],0).getDate();
+                let limite = curso_date_ended[0];
+                for(let i = 0; i < limite; i++){
+                  curso_date_ended[0] = dia_end;
+                  dia_end++;
+                }
+              }//else console.log('start no es menor a end o fecha actual no esta en started');
+              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_ended[1]){
+                //console.log('start es menos a end y fecha actual esta en ended');
+                let dia_start = new Date(curso_date_started[2],curso_date_started[1],1).getDate();
+                let verifier = new Date(curso_date_started[2], curso_date_started[1],0).getDate();
+                let limite = curso_date_started[0];
+                do{
+                  curso_date_started[0] = dia_start;
+                  dia_start-=1;
+                  verifier-=1;
+                }
+                while(verifier != limite);
+              }
+              // verifica año
+              if(
+                (fecha_actual[2] >= curso_date_started[2] && fecha_actual[2] <= curso_date_ended[2]) &&
+                (fecha_actual[1] >= curso_date_started[1] && fecha_actual[1] <= curso_date_ended[1]) &&
+                (fecha_actual[0] >= curso_date_started[0] && fecha_actual[0] <= curso_date_ended[0])
+                ){
+                  cursos_coinciden.push(curso);
+                }
           }
-
         }
-
-      }
-
-      return cursos_que_coinciden;
+      console.log(cursos_coinciden);
+      return cursos_coinciden;
 
     }
 
@@ -1202,21 +515,14 @@
 
     function processDay(dataElement, coursesObj) {
 
+      //console.log(dataElement);
       let curDateDiv = dataElement['element_date'].getAttribute('data-el-date').split('/');
 
       let arrCursosDiaActual = cursos_coinciden_dia_actual(coursesObj, curDateDiv);
-
-      /* Pone el dia en el offcanvas */
-
-      $('#offcanvasLabel_coursesList').html(
-        new Date(
-          parseInt(curDateDiv[2]),
-          parseInt(curDateDiv[1]) - 1,
-          parseInt(curDateDiv[0])
-        ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
-      )
+      //let arrCursosDiaActual = [];
 
       console.log(curDateDiv, coursesObj);
+      //console.log(arrCursosDiaActual);
 
       //---------------------------------------------------------------------
 
@@ -1228,48 +534,59 @@
 
         for (let course of arrCursosDiaActual) {
 
+          let main_curso;
+          if(course.main_curso != undefined){
+            main_curso = `<div class="col">
+                      <p><b>Belongs to: </b> ${course.main_curso}
+                    </div>`
+          }else{
+            main_curso = '';
+          }
+
           let accordionItem = `
-  <div class="accordion-item">
-  
-    <h2 class="accordion-header" id="course-header-${n}">
-  
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-${n}" aria-expanded="false" aria-controls="flush-collapse${n}">
-        ${course.name}
-      </button>
-  
-    </h2>
-  
-    <div id="flush-collapse-${n}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionCourses">
+            <div class="card">
             
-      <div class="accordion-body">
-      
-        <div class="row row-cols-2">
-        
-          <div class="col">
-  
-            <p><b>Schedule: </b>${course.course_start} - ${course.course_end}</p>
-  
-          </div>
-  
-          <div class="col">
-  
-            <p><b>Teacher: </b>${course.teacher}</p>
-  
-          </div>
-  
-          <div class="col">
-  
-            <p><b>Room: </b>${course.room}</p>
-  
-          </div>
-        
-        </div>
-  
-      </div>
-          
-    </div>
-  
-  </div>
+              <h2 class="card-header" id="course-header-${n}">
+            
+                <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#flush-collapse-${n}" aria-expanded="false" aria-controls="flush-collapse${n}">
+                  ${course.nombre_curso}
+                </button>
+            
+              </h2>
+            
+              <div id="flush-collapse-${n}" class="collapse" aria-labelledby="flush-headingOne" data-parent="#accordionCourses">
+                      
+                <div class="card-body">
+                
+                  <div class="row row-cols-2">
+                  
+                    <div class="col">
+            
+                      <p><b>Schedule: </b>${course.started_date} - ${course.ended_date}</p>
+            
+                    </div>
+            
+                    <div class="col">
+            
+                      <p><b>Teacher: </b>No establecido</p>
+            
+                    </div>
+            
+                    <div class="col">
+            
+                      <p><b>Room: </b>No establecido</p>
+            
+                    </div>
+
+                    ${main_curso}
+                  
+                  </div>
+            
+                </div>
+                    
+              </div>
+            
+            </div>
   `;
 
           if (!first) {
@@ -1288,11 +605,98 @@
       }
 
     }
+    
+    //---------------------------------------------------------------------
+
+    /*
+      Verifica si el mes objetivo es igual al mes del dia actual y despliega
+      el boton para ir al dia actual
+    */
+
+    function verify_today_button(objective_month){
+      if( objective_month != today[1] ){
+        $('.extra-buttons').addClass('d-block');
+        $('.extra-buttons').removeClass('d-none');
+      }else{
+        $('.extra-buttons').removeClass('d-block');
+        $('.extra-buttons').addClass('d-none');
+      }
+    }
+  </script>
+
+  <!-- HACE UN RENDERIZADO CON TODA LA INFORMACION COMO PRODUCTO FINAL -->
+  <script type="text/javascript" charset="utf-8">
+    function renderCalendar(...f) {
+
+      // Verifica si el mes es igual al actual para mostrar el boton "today"
+      verify_today_button(f[1]);
+      // Muestra el mes actual
+      printMonth(new Date(year + f[0], month + f[1]));
+
+      let i = 0;
+      // Obtiene el ultimo dia del mes anterior al actual
+      let prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
+      // Verifica que dia es
+      let weekDay = whichDayIsIt(prevLastDay.toString());
+
+      // Mientras no se Lunes, retrocede un dia hasta que sea lunes
+      while (weekDay != 'Mon') {
+
+        if (weekDay == 'Sun') { i++; break; }
+        i--;
+        prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
+        weekDay = whichDayIsIt(prevLastDay.toString());
+
+      }
+
+      prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
+
+      let current_month = month + f[1];
+
+      // For para establecer dias uno por uno hasta finalizar el numero de casillas dentro del calendario
+      for (let element of dias) {
+
+        let ele = new Date(year + f[0], month + f[1], i);
+        ele = [ele.getFullYear(), ele.getMonth(), ele.getDate()];
+
+        // Si el mes del dia objetivo del calendario no es igual al mes actual, establecer como "fuera del mes"
+        // Si no, retira lo establecido
+        if (ele[1] != current_month) element.classList.add('out-of-month');
+        else element.classList.remove('out-of-month');
+
+        // Si el dia objetivo es hoy, establecer como "hoy", sino, retira lo establecido
+        if (ele[0] == today[0] && ele[1] == today[1] && ele[2] == today[2]) element.classList.add('today');
+        else element.classList.remove('today');
+
+        element.children[0].innerHTML = prevLastDay;  // Muestra el dia objetivo
+
+        let dateForDiv = new Date(year + f[0], month + f[1], i);
+        element.setAttribute('data-el-date', dateForDiv.toLocaleDateString()); // Deja la informacion del dia en el elemento
+
+        /*------------------------------------------------------------------------------
+      
+        AQUI DEBERIA VERIFICAR SI ES QUE HAY CURSOS EN EL DIA OBJETIVO O NO
+      
+        ------------------------------------------------------------------------------*/
+
+        i++;
+        prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
+
+      }
+
+      make_request_for_courses(dias);
+
+    }
+
+    //getAPIToday();
+
+    // renderizar el dia de hoy
+    renderCalendar(0, 0);
   </script>
 
   <!-- SCRIPT PARA CAMBIAR DE MES -->
   <script type="text/javascript" charset="utf-8">
-    document.querySelectorAll('div.titulo-del-cuadro i.fas').forEach(arrow => {
+    document.querySelectorAll('div.titulo-del-cuadro div.calendar_arrow').forEach(arrow => {
 
       arrow.addEventListener('click', (ev) => {
 
@@ -1302,12 +706,14 @@
 
             if ((month + mnth) != 0) {
               mnth--;
-              getAPIDinamicDate(yr, mnth);
+              renderCalendar(yr,mnth);
+              //getAPIDinamicDate(yr, mnth);
             }
             else {
               yr--;
               mnth = 11;
-              getAPIDinamicDate(yr, mnth);
+              renderCalendar(yr,mnth);
+              //getAPIDinamicDate(yr, mnth);
             }
 
             break;
@@ -1316,12 +722,14 @@
 
             if ((month + mnth) != 11) {
               mnth++;
-              getAPIDinamicDate(yr, mnth);
+              renderCalendar(yr,mnth);
+              //getAPIDinamicDate(yr, mnth);
             }
             else {
               yr++;
               mnth = 0;
-              getAPIDinamicDate(yr, mnth);
+              renderCalendar(yr,mnth);
+              //getAPIDinamicDate(yr, mnth);
             }
 
             break;
@@ -1332,12 +740,6 @@
     });
   </script>
 
-  <!-- DATABASE CHANGES UTILITIES -->
-
-  <script src="script2/database_petitions/add_course.js"></script>
-  <script src="script2/database_petitions/delete_course.js"></script>
-  <script src="script2/database_petitions/edit_course.js"></script>
-
   <!-- MORE STUFF -->
 
   <script type="text/javascript" charset="utf-8">
@@ -1345,13 +747,49 @@
 
       switch (ev.target.tagName) {
         case 'DIV':
-          getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target, tagName: 'DIV' } });
+          if( ev.target.className.includes('dia') && !ev.target.className.includes('out-of-month') ){
+            /* Pone el dia en el offcanvas */
+            let curDateDiv = ev.target.getAttribute('data-el-date').split('/');
+            $('#offcanvasLabel_coursesList').html(
+              new Date(
+                parseInt(curDateDiv[2]),
+                parseInt(curDateDiv[1]) - 1,
+                parseInt(curDateDiv[0])
+              ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
+            );
+            $('#accordionCourses').html('Cargando...');
+            
+            $('#offcanvasExample').modal('show');
+            getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target, tagName: 'DIV' } });
+          }
           break;
         case 'P':
-          getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement, tagName: 'P' } });
+          if ( ev.target.parentElement.className.includes('dia') && !ev.target.parentElement.className.includes('out-of-month')) {
+            /* Pone el dia en el offcanvas */
+            let curDateDiv = ev.target.parentElement.getAttribute('data-el-date').split('/');
+            $('#offcanvasLabel_coursesList').html(
+              new Date(
+                parseInt(curDateDiv[2]),
+                parseInt(curDateDiv[1]) - 1,
+                parseInt(curDateDiv[0])
+              ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
+            );
+            $('#accordionCourses').html('Cargando...');
+            //processDay(ev.target.parentElement,{ndeah:2})
+
+
+            $('#offcanvasExample').modal('show');
+            getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement, tagName: 'P' } });
+          }
           break;
       }
 
+    });
+
+    //-- Button go to today
+
+    $('#go_today').click(function(e){
+      renderCalendar(0,0);
     });
   </script>
 

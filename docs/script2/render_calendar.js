@@ -23,7 +23,7 @@ function renderCalendar(...f){
   
     let current_month = month + f[1];
   
-    // Empieza con el primer dia
+    // For para establecer dias uno por uno hasta finalizar el numero de casillas dentro del calendario
     for(let element of dias){
   
       let ele = new Date(year + f[0], month + f[1], i);
@@ -40,10 +40,16 @@ function renderCalendar(...f){
   
       element.children[0].innerHTML = prevLastDay;  // Muestra el dia objetivo
   
-      let dateForDiv = new Date(year + f[0], month + f[1], i);
+      /*let dateForDiv = new Date(year + f[0], month + f[1], i);
       element.setAttribute('data-el-date',dateForDiv.toLocaleDateString()); // Deja la informacion del dia en el elemento
   
-      let day_courses = if_there_are_courses_that_day(dateForDiv,f[2],element);
+      let day_courses = if_there_are_courses_that_day(dateForDiv,f[2],element);*/
+
+      /*------------------------------------------------------------------------------
+
+      AQUI DEBERIA VERIFICAR SI ES QUE HAY CURSOS EN EL DIA OBJETIVO O NO
+
+      ------------------------------------------------------------------------------*/
 
       i++;
       prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
@@ -52,4 +58,7 @@ function renderCalendar(...f){
   
   }
 
-getAPIToday();
+//getAPIToday();
+
+// renderizar el dia de hoy
+renderCalendar(0,0);
