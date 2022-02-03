@@ -95,13 +95,13 @@
 
       <div class="titulo-del-cuadro d-flex justify-content-between align-items-center my-4">
 
-        <div class="calendar_arrow">
+        <div class="calendar_arrow left">
           <i class="fas fa-chevron-left"></i>
         </div>
 
         <h1 class="h1 m-0">{nombre del mes}</h1>
 
-        <div class="calendar_arrow">
+        <div class="calendar_arrow right">
           <i class="fas fa-chevron-right"></i>
         </div>
 
@@ -145,7 +145,7 @@
 
   </div>
 
-  <!-- OFFCANVAS LISTA DE CURSOS POR DIA SELECCIONADO -->
+  <!-- MODAL LISTA DE CURSOS POR DIA SELECCIONADO -->
 
   <div class="modal fade" id="offcanvasExample" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
@@ -155,7 +155,7 @@
 
         <div class="modal-header">
 
-          <h5 class="offcanvas-title" id="offcanvasLabel_coursesList">{date}</h5>
+          <h5 class="modal-title" id="offcanvasLabel_coursesList">{date}</h5>
 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 
@@ -167,10 +167,31 @@
 
         <div class="modal-body">
         
-          <h5 class="offcanvas-subtitle" id="offcanvasLabel">Your courses</h5>
+          <h5 class="modal-subtitle" id="offcanvasLabel">Your courses</h5>
           <hr>
         
-          <div class="courses-container accordion" id="accordionCourses"></div>
+          <ul class="nav nav-tabs mb-3">
+            
+            <li class="nav-item">
+              <a id="indiv_toggle" type="button" role="button" name="tab_link" class="nav-link" aria-expanded="false" aria-controls="indiv_collapse">Individuals</a>
+            </li>
+            <li class="nav-item">
+              <a id="groups_toggle" type="button" role="button" name="tab_link" class="nav-link active" aria-expanded="false" aria-controls="groups_collapse">Groups</a>
+            </li>
+          
+          </ul>
+
+          <div class="collapse" id="indiv_collapse" style="overflow-x: auto">
+          
+            <div class="accordion" id="indiv_courses"></div>
+          
+          </div>
+
+          <div class="collapse show" id="groups_collapse" style="overflow-x: auto;">
+          
+            <div class="accordion" id="groups_courses"></div>
+          
+          </div>
 
         </div>
 
@@ -178,6 +199,38 @@
 
     </div>
 
+  </div>
+
+  <!-- MODAL LISTA DE CURSOS POR GRUPO -->
+
+  <div class="modal fade" id="groupal_courses_list" tabindex="-1" aria-labelledby="groupal_courses_list" aria-hidden="true">
+  
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    
+      <div class="modal-content">
+      
+        <div class="modal-header align-items-center">
+        
+          <button type="button" class="btn" data-dismiss="modal" data-toggle="modal" data-target="#offcanvasExample" aria-label="Close">
+            <span aria-hidden="true">
+              <i class="fas fa-chevron-left" style="font-size: 25px"></i>
+            </span>
+          </button>
+        
+          <h5 class="modal-title" id="group_name_title"></h5>
+        
+        </div>
+      
+        <div class="modal-body">
+        
+          <div class="accordion" id="list_courses"></div>
+        
+        </div>
+      
+      </div>
+    
+    </div>
+  
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
@@ -254,7 +307,24 @@
   <script type="text/javascript" charset="utf-8">
     function getAPIForCoursesListation(objData) {
 
-        $.getJSON('http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php',
+      let spinner = `
+      <div class="text-center" id="spinner_loading">
+            
+            <div class="spinner-border" role="status">
+            
+              <span class="sr-only"></span>
+            
+            </div>
+          
+          </div>`;
+      
+      $('#groups_courses').html(spinner);
+      $('#indiv_courses').html(spinner);
+
+
+      let localLng = 'en';
+
+        $.getJSON(`http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php?all=true`,
 
           function (courses) {
 
@@ -276,53 +346,15 @@
 
     function make_request_for_courses(dias_calendario) {
 
-      $.getJSON("http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php",
+      let localLng = 'en';
+
+      $.getJSON(`http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php?all=true`,
         function (data) {
           for (let dia of dias_calendario) {
             let date_dia = dia.getAttribute('data-el-date').split('/').map(e => { return parseInt(e) });
             let cursos_coinciden = [];
             for (let curso of data) {
-              if (curso.group_of_courses != '0') {
-                for (let cursos_individuales of curso.elements) {
-                  let curso_date_started = cursos_individuales.started_date.split('-').map(e => { return parseInt(e) }).reverse();
-                  let curso_date_ended = cursos_individuales.ended_date.split('-').map(e => { return parseInt(e) }).reverse();
-                  if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_started[1]) {
-                    //console.log('start es meno a end y fecha actual esta en started');
-                    let dia_end = new Date(curso_date_ended[2], curso_date_ended[1], 0).getDate();
-                    let limite = curso_date_ended[0];
-                    for (let i = 0; i < limite; i++) {
-                      curso_date_ended[0] = dia_end;
-                      dia_end++;
-                    }
-                  }//else console.log('start no es menor a end o fecha actual no esta en started');
-                  if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_ended[1]) {
-                    //console.log('start es menos a end y fecha actual esta en ended');
-                    let dia_start = new Date(curso_date_started[2], curso_date_started[1], 1).getDate();
-                    let verifier = new Date(curso_date_started[2], curso_date_started[1], 0).getDate();
-                    let limite = curso_date_started[0];
-                    do {
-                      curso_date_started[0] = dia_start;
-                      dia_start -= 1;
-                      verifier -= 1;
-                    }
-                    while (verifier != limite);
-                  }//else console.log('start no es menor a end o fecha actual no esta en ended');
-                  //console.log(curso_date_started);
-                  //console.log(curso_date_ended);
-                  //console.log(date_dia);
-                  //console.log(cursos_individuales);
-                  // verifica año
-                  if (
-                    (date_dia[2] >= curso_date_started[2] && date_dia[2] <= curso_date_ended[2]) &&
-                    (date_dia[1] >= curso_date_started[1] && date_dia[1] <= curso_date_ended[1]) &&
-                    (date_dia[0] >= curso_date_started[0] && date_dia[0] <= curso_date_ended[0])
-                  ) {
-                    cursos_coinciden.push(cursos_individuales);
-                  }
-                }
-                break;
-              } else {
-                let curso_date_started = curso.started_date.split('-').map(e => { return parseInt(e) }).reverse();
+              let curso_date_started = curso.started_date.split('-').map(e => { return parseInt(e) }).reverse();
                 let curso_date_ended = curso.ended_date.split('-').map(e => { return parseInt(e) }).reverse();
                 if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_started[1]) {
                   let dia_end = new Date(curso_date_ended[2], curso_date_ended[1], 0).getDate();
@@ -355,7 +387,6 @@
                 ) {
                   cursos_coinciden.push(curso);
                 }
-              }
             }
 
             // añadir el puntito
@@ -427,47 +458,7 @@
       fecha_actual = fecha_actual.map(e=>{return parseInt(e)});
       let cursos_coinciden = [];
       for(let curso of lista_de_cursos){
-          if(curso.group_of_courses != '0'){
-            for(let cursos_individuales of curso.elements){
-              let curso_date_started = cursos_individuales.started_date.split('-').map(e=>{return parseInt(e)}).reverse();
-              let curso_date_ended = cursos_individuales.ended_date.split('-').map(e=>{return parseInt(e)}).reverse();
-              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_started[1]) {
-                //console.log('start es meno a end y fecha actual esta en started');
-                let dia_end = new Date(curso_date_ended[2],curso_date_ended[1],0).getDate();
-                let limite = curso_date_ended[0];
-                for(let i = 0; i < limite; i++){
-                  curso_date_ended[0] = dia_end;
-                  dia_end++;
-                }
-              }//else console.log('start no es menor a end o fecha actual no esta en started');
-              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_ended[1]){
-                //console.log('start es menos a end y fecha actual esta en ended');
-                let dia_start = new Date(curso_date_started[2],curso_date_started[1],1).getDate();
-                let verifier = new Date(curso_date_started[2], curso_date_started[1],0).getDate();
-                let limite = curso_date_started[0];
-                do{
-                  curso_date_started[0] = dia_start;
-                  dia_start-=1;
-                  verifier-=1;
-                }
-                while(verifier != limite);
-              }
-              //console.log(curso_date_started);
-              //console.log(curso_date_ended);
-              //console.log(date_dia);
-              //console.log(cursos_individuales);
-              // verifica año
-              if(
-                (fecha_actual[2] >= curso_date_started[2] && fecha_actual[2] <= curso_date_ended[2]) &&
-                (fecha_actual[1] >= curso_date_started[1] && fecha_actual[1] <= curso_date_ended[1]) &&
-                (fecha_actual[0] >= curso_date_started[0] && fecha_actual[0] <= curso_date_ended[0])
-                ){
-                  cursos_coinciden.push(cursos_individuales);
-                }
-            }
-            break;
-          }else{
-            let curso_date_started = curso.started_date.split('-').map(e=>{return parseInt(e)}).reverse();
+        let curso_date_started = curso.started_date.split('-').map(e=>{return parseInt(e)}).reverse();
               let curso_date_ended = curso.ended_date.split('-').map(e=>{return parseInt(e)}).reverse();
               if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_started[1]) {
                 //console.log('start es meno a end y fecha actual esta en started');
@@ -498,7 +489,6 @@
                 ){
                   cursos_coinciden.push(curso);
                 }
-          }
         }
       console.log(cursos_coinciden);
       return cursos_coinciden;
@@ -526,85 +516,313 @@
 
       //---------------------------------------------------------------------
 
-      let containerAccordion = document.querySelector('#accordionCourses');
+      let indiv_container = document.querySelector('#indiv_courses');
+      let groupal_container = document.querySelector('#groups_courses');
+    
       let n = 1;
-      let first = false;
+      let individual_bool = false;
+      let groupal_bool = false;
 
       if (arrCursosDiaActual.length != 0) {
-
+      
+        let individual_courses_counter = 0;
+        let groupal_courses_counter = 0;
         for (let course of arrCursosDiaActual) {
 
-          let main_curso;
-          if(course.main_curso != undefined){
-            main_curso = `<div class="col">
-                      <p><b>Belongs to: </b> ${course.main_curso}
-                    </div>`
-          }else{
-            main_curso = '';
-          }
-
-          let accordionItem = `
+          console.log(course);
+          if(course.group_of_courses != '1'){ // individual
+            individual_courses_counter++;
+            let accordionItem = `
             <div class="card">
-            
-              <h2 class="card-header" id="course-header-${n}">
-            
-                <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#flush-collapse-${n}" aria-expanded="false" aria-controls="flush-collapse${n}">
-                  ${course.nombre_curso}
-                </button>
-            
-              </h2>
-            
-              <div id="flush-collapse-${n}" class="collapse" aria-labelledby="flush-headingOne" data-parent="#accordionCourses">
-                      
-                <div class="card-body">
+              
+              <div class="card-header" id="course` + n + `_indiv_toggle">
+              
+                <h2 class="mb-0">
                 
-                  <div class="row row-cols-2">
+                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#course` + n + `_indiv" aria-expanded="true" aria-controls="course` + n + `_indiv">
                   
-                    <div class="col">
+                    ` + course.nombre_curso + `
+                  
+                  </button>
+                
+                </h2>
+              
+              </div>
             
-                      <p><b>Schedule: </b>${course.started_date} - ${course.ended_date}</p>
-            
-                    </div>
-            
-                    <div class="col">
-            
-                      <p><b>Teacher: </b>No establecido</p>
-            
-                    </div>
-            
-                    <div class="col">
-            
-                      <p><b>Room: </b>No establecido</p>
-            
-                    </div>
-
-                    ${main_curso}
+              <div id="course` + n + `_indiv" class="collapse" aria-labelledby="course` + n + `_indiv_toggle" data-parent="#indiv_courses">
+              
+                <div class="card-body row">
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Start date: </b>` + course.started_date + `</p>
                   
                   </div>
-            
-                </div>
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Start time: </b>` + course.started_time + `</p>
+                  
+                  </div>
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Status: </b>` + course.status + `</p>
+                  
+                  </div>
+                
+                  <div class="col-12 row">
+                  
+                    <div class="col-6 col-lg-4">
+                  
+                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${viewAction}${' + course.id_course_schedule + '}' +  `">
+                        <i class="fas fa-search"></i> View
+                      </a>
                     
+                    </div>
+                  
+                    <div class="col-6 col-lg-4">
+                    
+                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${studentsAction}${' + course.id_course_schedule + '}' +  `">
+                        <i class="fas fa-users"></i> Students
+                      </a>
+                    
+                    </div>
+                  
+                  </div>
+                
+                
+                </div>
+              
               </div>
             
             </div>
-  `;
+            `;
 
-          if (!first) {
-            containerAccordion.innerHTML = accordionItem;
-            first = true;
-          } else {
-            containerAccordion.innerHTML += accordionItem;
+            if (!individual_bool) {
+              indiv_container.innerHTML = accordionItem;
+              individual_bool = true;
+            } else {
+              indiv_container.innerHTML += accordionItem;
+            }
+          }else{ // grupal
+            groupal_courses_counter++;
+            let accordionItem = `
+            <div class="card">
+              
+              <div class="card-header" id="course` + n + `_group_toggle">
+              
+                <h2 class="mb-0">
+                
+                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#course` + n + `_group" aria-expanded="true" aria-controls="course` + n + `_group">
+                  
+                    ` + course.nombre_curso + `
+                  
+                  </button>
+                
+                </h2>
+              
+              </div>
+            
+              <div id="course` + n + `_group" class="collapse" aria-labelledby="course` + n + `_group_toggle" data-parent="#groups_courses">
+              
+                <div class="card-body row">
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Start date: </b>` + course.started_date + `</p>
+                  
+                  </div>
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>End date: </b>` + course.ended_date + `</p>
+                  
+                  </div>
+
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Status: </b>` + course.status + `</p>
+                  
+                  </div>
+                
+                  <div class="col-12 row">
+                  
+                    <div class="col-6 col-lg-4">
+                  
+                      <a type="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${viewAction}${' + course.id_course_schedule + '}' +  `">
+                        <i class="fas fa-search"></i> View
+                      </a>
+                    
+                    </div>
+                  
+                    <div class="col-6 col-lg-4">
+                    
+                      <a type="button" class="btn btn-secondary" name="course_list_btn" data-group-course='${JSON.stringify([course.id_course_schedule,course.nombre_curso])}'>
+                        <i class="fas fa-book"></i> Courses
+                      </a>
+                    
+                    </div>
+                  
+                  </div>
+                
+                </div>
+              
+              </div>
+            
+            </div>`;
+          
+            if (!groupal_bool) {
+              groupal_container.innerHTML = accordionItem;
+              groupal_bool = true;
+            } else {
+              groupal_container.innerHTML += accordionItem;
+            }
           }
 
           n++;
 
         }
 
-      } else {
-        containerAccordion.innerHTML = '<h3>There are no courses for today.</h3>';
+        if(individual_courses_counter == 0){
+          indiv_container.innerHTML = '<h4 class="text-center">There are no individual courses.</h4>';
+        }
+        if(groupal_courses_counter == 0){
+          groupal_container.innerHTML = '<h4 class="text-center">There are no groupal courses.</h4>';
+        }
+
+      }else{
+        indiv_container.innerHTML = '<h4 class="text-center">There are no individual courses.</h4>';
+        groupal_container.innerHTML = '<h4 class="text-center">There are no groupal courses.</h4>';
       }
 
+      document.getElementsByName('course_list_btn').forEach(btn=>{
+      
+        btn.onclick = (e)=>{
+        
+          let group_name = JSON.parse( e.target.getAttribute('data-group-course') );
+
+          $('#group_name_title').html(group_name[1]);
+
+          let spinner = `<div class="text-center" id="spinner_loading">
+            
+            <div class="spinner-border" role="status">
+            
+              <span class="sr-only"></span>
+            
+            </div>
+          
+          </div>`;
+
+          $('#list_courses').html(spinner);
+          
+          $('#offcanvasExample').modal('hide');
+          $('#groupal_courses_list').modal('show');
+        
+          $.ajax({
+          type: "post",
+          url: `http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php?group-list=true`,
+          data: JSON.stringify({course_id:group_name[0]}),
+          timeout:0,
+          processData: false,
+          contentType: 'application/json',
+          success: function (response) {
+          
+            let group_list_container = document.querySelector('#list_courses');
+            let n_list = 1;
+            let first = false;
+          
+            for(let curso of JSON.parse(response)){
+            
+              console.log(curso['nombre_curso']);
+              let accordionItem_list = `
+              <div class="card">
+              
+              <div class="card-header" id="course` + n_list + `_list_course_toggle">
+              
+                <h2 class="mb-0">
+                
+                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#course` + n_list + `_list_course" aria-expanded="true" aria-controls="course` + n_list + `_list_course">
+                  
+                    ` + curso.nombre_curso + `
+                  
+                  </button>
+                
+                </h2>
+              
+              </div>
+            
+              <div id="course` + n_list + `_list_course" class="collapse" aria-labelledby="course` + n_list + `_list_course_toggle" data-parent="#list_courses">
+              
+                <div class="card-body row">
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Start date: </b>` + curso.started_date + `</p>
+                  
+                  </div>
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Start time: </b>` + curso.started_time + `</p>
+                  
+                  </div>
+                
+                  <div class="col-6 col-lg-4">
+                  
+                    <p> <b>Status: </b>`+ curso.status + `</p>
+                  
+                  </div>
+                
+                  <div class="col-12 row">
+                  
+                    <div class="col-6 col-lg-4">
+                  
+                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${viewAction}${' + curso.id_course_schedule + '}' +  `">
+                        <i class="fas fa-search"></i> View
+                      </a>
+                    
+                    </div>
+                  
+                    <div class="col-6 col-lg-4">
+                    
+                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${studentsAction}${' + curso.id_course_schedule + '}' +  `">
+                        <i class="fas fa-users"></i> Students
+                      </a>
+                    
+                    </div>
+                  
+                  </div>
+                
+                
+                </div>
+              
+              </div>
+            
+            </div>`;
+            
+              if (!first) {
+                group_list_container.innerHTML = accordionItem_list;
+                first = true;
+              } else {
+                group_list_container.innerHTML += accordionItem_list;
+              }
+            
+              n_list++;
+            
+            }
+          
+          }
+        });
+        
+        };
+      
+      });
     }
+
+    /*
+      Onclick en el boton para ver los cursos por grupo
+    */
     
     //---------------------------------------------------------------------
 
@@ -614,16 +832,43 @@
     */
 
     function verify_today_button(objective_month){
-      if( objective_month != today[1] ){
-        $('.extra-buttons').addClass('d-block');
-        $('.extra-buttons').removeClass('d-none');
+      if( (month + objective_month) != today[1] ){
+        $('#go_today')[0].disabled = false;
       }else{
         yr = 0;
         mnth = 0;
-        $('.extra-buttons').removeClass('d-block');
-        $('.extra-buttons').addClass('d-none');
+        $('#go_today')[0].disabled = true;
       }
     }
+
+    //---------------------------------------------------------------------
+
+    /*
+      Cambiar el estado del Tab en el modal COURSES LIST
+    */
+
+    document.getElementsByName('tab_link').forEach(link=>{
+      link.onclick = (e)=>{
+        switch(e.target.id){
+          case 'indiv_toggle':
+            //-- CSS configuration
+            e.target.classList.add('active');
+            e.target.parentElement.nextElementSibling.children[0].classList.remove('active');
+            //-- Collapse configuration
+            $('#indiv_collapse').collapse('show');
+            $('#groups_collapse').collapse('hide');
+            break;
+          case 'groups_toggle':
+            e.target.classList.add('active');
+            e.target.parentElement.previousElementSibling.children[0].classList.remove('active');
+            $('#groups_collapse').collapse('show');
+            $('#indiv_collapse').collapse('hide');
+            break;
+          default:
+            console.log('Doesnt work');
+        }
+      };
+    });
   </script>
 
   <!-- HACE UN RENDERIZADO CON TODA LA INFORMACION COMO PRODUCTO FINAL -->
@@ -717,6 +962,7 @@
               renderCalendar(yr,mnth);
               //getAPIDinamicDate(yr, mnth);
             }
+            console.log(month,mnth);
 
             break;
 
@@ -733,6 +979,7 @@
               renderCalendar(yr,mnth);
               //getAPIDinamicDate(yr, mnth);
             }
+            console.log(month,mnth);
 
             break;
         }
@@ -747,6 +994,17 @@
   <script type="text/javascript" charset="utf-8">
     $('.cuadros-mes').click(function (ev) {
 
+      //-- establece el tab "Groups" como tab principal
+
+      if(!$('#groups_toggle').hasClass('active')){
+        //-- activa group collapse
+        $('#groups_toggle').addClass('active');
+        $('#groups_collapse').collapse('show');
+        $('#indiv_collapse').collapse('hide');
+        $('#indiv_toggle').removeClass('active');
+      }
+
+      //-- logica para el modal
       switch (ev.target.tagName) {
         case 'DIV':
           if( ev.target.className.includes('dia') && !ev.target.className.includes('out-of-month') ){
@@ -759,8 +1017,7 @@
                 parseInt(curDateDiv[0])
               ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
             );
-            $('#accordionCourses').html('Cargando...');
-            
+          
             $('#offcanvasExample').modal('show');
             getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target, tagName: 'DIV' } });
           }
@@ -776,10 +1033,7 @@
                 parseInt(curDateDiv[0])
               ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
             );
-            $('#accordionCourses').html('Cargando...');
-            //processDay(ev.target.parentElement,{ndeah:2})
-
-
+          
             $('#offcanvasExample').modal('show');
             getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement, tagName: 'P' } });
           }
