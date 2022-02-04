@@ -202,6 +202,14 @@
 
         </div>
 
+        <div class="modal-footer row justify-content-center align-items-center">
+        
+          <button type="button" id="new_btn_modal" class="btn btn-info btn-block col-4" page="/WEB-INF/paginas/admin/adminCourseScheduleAdd.jsp">
+            <i class="fas fa-plus"></i> New
+          </button>
+        
+        </div>
+
       </div>
 
     </div>
@@ -465,7 +473,6 @@
 
     function cursos_coinciden_dia_actual(lista_de_cursos, fecha_actual) {
 
-      console.log(lista_de_cursos);
       fecha_actual = fecha_actual.map(e=>{return parseInt(e)});
       let cursos_coinciden = [];
       for(let curso of lista_de_cursos){
@@ -501,7 +508,6 @@
                   cursos_coinciden.push(curso);
                 }
         }
-      console.log(cursos_coinciden);
       return cursos_coinciden;
 
     }
@@ -516,14 +522,9 @@
 
     function processDay(dataElement, coursesObj) {
 
-      //console.log(dataElement);
       let curDateDiv = dataElement['element_date'].getAttribute('data-el-date').split('/');
 
       let arrCursosDiaActual = cursos_coinciden_dia_actual(coursesObj, curDateDiv);
-      //let arrCursosDiaActual = [];
-
-      console.log(curDateDiv, coursesObj);
-      //console.log(arrCursosDiaActual);
 
       //---------------------------------------------------------------------
 
@@ -540,7 +541,6 @@
         let groupal_courses_counter = 0;
         for (let course of arrCursosDiaActual) {
         
-          console.log(course);
           let id_curso = `\${${course.id_course_schedule}}`;
           if(course.group_of_courses != '1'){ // individual
             individual_courses_counter++;
@@ -551,9 +551,13 @@
               
                 <h2 class="mb-0">
                 
-                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#course` + n + `_indiv" aria-expanded="true" aria-controls="course` + n + `_indiv">
+                  <button class="btn btn-block" type="button" data-toggle="collapse" data-target="#course` + n + `_indiv" aria-expanded="true" aria-controls="course` + n + `_indiv">
                   
-                    ` + course.nombre_curso + `
+                    <div class="m-0 w-100 row justify-content-between">
+                      <span class="col-auto p-0">` + course.nombre_curso + `</span>
+
+                      <span class="col-auto p-0">`+course.status+`</span>
+                    </div>
                   
                   </button>
                 
@@ -626,9 +630,13 @@
               
                 <h2 class="mb-0">
                 
-                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#course` + n + `_group" aria-expanded="true" aria-controls="course` + n + `_group">
+                  <button class="btn btn-block" type="button" data-toggle="collapse" data-target="#course` + n + `_group" aria-expanded="true" aria-controls="course` + n + `_group">
                   
-                    ` + course.nombre_curso + `
+                    <div class="m-0 w-100 row justify-content-between">
+                      <span class="col-auto p-0">` + course.nombre_curso + `</span>
+
+                      <span class="col-auto p-0">`+course.status+`</span>
+                    </div>
                   
                   </button>
                 
@@ -755,9 +763,13 @@
               
                 <h2 class="mb-0">
                 
-                  <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#course` + n_list + `_list_course" aria-expanded="true" aria-controls="course` + n_list + `_list_course">
+                  <button class="btn btn-block" type="button" data-toggle="collapse" data-target="#course` + n_list + `_list_course" aria-expanded="true" aria-controls="course` + n_list + `_list_course">
                   
-                    ` + curso.nombre_curso + `
+                    <div class="m-0 w-100 row justify-content-between">
+                      <span class="col-auto p-0">` + curso.nombre_curso + `</span>
+
+                      <span class="col-auto p-0">`+curso.status+`</span>
+                    </div>
                   
                   </button>
                 
