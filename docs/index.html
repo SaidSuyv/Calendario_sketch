@@ -109,7 +109,14 @@
 
       <div class="extra-buttons my-3">
       
-        <button type="button" class="btn btn-primary" id="go_today">Today</button>
+        <button type="button" class="btn btn-primary" id="go_today">
+          <div class="d-none" id="spinner_calendar_loading">
+            
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          
+          </div>
+          <span id="today_text" class="d-block">Today</span>
+        </button>
       
       </div>
 
@@ -139,7 +146,7 @@
 
       </div>
 
-      <div class="cuadros-mes"></div>
+      <div class="cuadros-mes position-relative"></div>
 
     </div>
 
@@ -290,8 +297,8 @@
 
 
     /* Variables para cambiar meses y asi xd */
-    var yr = 0;
-    var mnth = 0;
+    var yr = date.getFullYear();
+    var mnth = date.getMonth();
 
     /* Variables para determinar los limites de los dias al añadir un nuevo curso o editarlo */
 
@@ -350,6 +357,14 @@
 
       $.getJSON(`http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php?all=true`,
         function (data) {
+        
+          //-- Loading calendar
+          $('#spinner_calendar_loading').toggleClass('d-block d-none');
+          $('#today_text').toggleClass('d-block d-none');
+          // Verifica si el mes es igual al actual para mostrar el boton "today"
+          verify_today_button(yr,mnth);
+        
+          //-- Courses logic selection
           for (let dia of dias_calendario) {
             let date_dia = dia.getAttribute('data-el-date').split('/').map(e => { return parseInt(e) });
             let cursos_coinciden = [];
@@ -375,10 +390,6 @@
                   }
                   while (verifier != limite);
                 }
-                //console.log(curso_date_started);
-                //console.log(curso_date_ended);
-                //console.log(date_dia);
-                //console.log(curso);
                 // verifica año
                 if (
                   (date_dia[2] >= curso_date_started[2] && date_dia[2] <= curso_date_ended[2]) &&
@@ -528,8 +539,9 @@
         let individual_courses_counter = 0;
         let groupal_courses_counter = 0;
         for (let course of arrCursosDiaActual) {
-
+        
           console.log(course);
+          let id_curso = `\${${course.id_course_schedule}}`;
           if(course.group_of_courses != '1'){ // individual
             individual_courses_counter++;
             let accordionItem = `
@@ -555,19 +567,19 @@
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Start date: </b>` + course.started_date + `</p>
+                    <p> <b class="d-block">Start date: </b>` + course.started_date + `</p>
                   
                   </div>
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Start time: </b>` + course.started_time + `</p>
+                    <p> <b class="d-block">Start time: </b>` + course.started_time + `</p>
                   
                   </div>
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Status: </b>` + course.status + `</p>
+                    <p> <b class="d-block">Status: </b>` + course.status + `</p>
                   
                   </div>
                 
@@ -575,15 +587,15 @@
                   
                     <div class="col-6 col-lg-4">
                   
-                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${viewAction}${' + course.id_course_schedule + '}' +  `">
+                      <a type="button" role="button" class="btn btn-secondary text-white" href="`+ '${pageContext.request.contextPath}${viewAction}'+id_curso+`">
                         <i class="fas fa-search"></i> View
                       </a>
                     
                     </div>
                   
-                    <div class="col-6 col-lg-4">
+                    <div class="col-6 col-lg-8">
                     
-                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${studentsAction}${' + course.id_course_schedule + '}' +  `">
+                      <a type="button" role="button" class="btn btn-secondary text-white" href="`+ '${pageContext.request.contextPath}${studentsAction}'+id_curso+`">
                         <i class="fas fa-users"></i> Students
                       </a>
                     
@@ -630,19 +642,19 @@
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Start date: </b>` + course.started_date + `</p>
+                    <p> <b class="d-block">Start date: </b>` + course.started_date + `</p>
                   
                   </div>
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>End date: </b>` + course.ended_date + `</p>
+                    <p> <b class="d-block">End date: </b>` + course.ended_date + `</p>
                   
                   </div>
 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Status: </b>` + course.status + `</p>
+                    <p> <b class="d-block">Status: </b>` + course.status + `</p>
                   
                   </div>
                 
@@ -650,15 +662,15 @@
                   
                     <div class="col-6 col-lg-4">
                   
-                      <a type="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${viewAction}${' + course.id_course_schedule + '}' +  `">
+                      <a type="button" class="btn btn-secondary text-white" href="`+ '${pageContext.request.contextPath}${viewAction}' + id_curso + `">
                         <i class="fas fa-search"></i> View
                       </a>
                     
                     </div>
                   
-                    <div class="col-6 col-lg-4">
+                    <div class="col-6 col-lg-8">
                     
-                      <a type="button" class="btn btn-secondary" name="course_list_btn" data-group-course='${JSON.stringify([course.id_course_schedule,course.nombre_curso])}'>
+                      <a type="button" class="btn btn-secondary text-white" name="course_list_btn" data-group-course='${JSON.stringify([course.id_course_schedule,course.nombre_curso])}'>
                         <i class="fas fa-book"></i> Courses
                       </a>
                     
@@ -734,6 +746,7 @@
           
             for(let curso of JSON.parse(response)){
             
+              let id_curso = '${'+curso.id_course_schedule+'}';
               console.log(curso['nombre_curso']);
               let accordionItem_list = `
               <div class="card">
@@ -758,19 +771,19 @@
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Start date: </b>` + curso.started_date + `</p>
+                    <p> <b class="d-block">Start date: </b>` + curso.started_date + `</p>
                   
                   </div>
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Start time: </b>` + curso.started_time + `</p>
+                    <p> <b class="d-block">Start time: </b>` + curso.started_time + `</p>
                   
                   </div>
                 
                   <div class="col-6 col-lg-4">
                   
-                    <p> <b>Status: </b>`+ curso.status + `</p>
+                    <p> <b class="d-block">Status: </b>`+ curso.status + `</p>
                   
                   </div>
                 
@@ -778,15 +791,15 @@
                   
                     <div class="col-6 col-lg-4">
                   
-                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${viewAction}${' + curso.id_course_schedule + '}' +  `">
+                      <a type="button" role="button" class="btn btn-secondary text-white" href="`+ '${pageContext.request.contextPath}${viewAction}'+id_curso+`">
                         <i class="fas fa-search"></i> View
                       </a>
                     
                     </div>
                   
-                    <div class="col-6 col-lg-4">
+                    <div class="col-6 col-lg-8">
                     
-                      <a type="button" role="button" class="btn btn-secondary" href="`+ '${pageContext.request.contextPath}${studentsAction}${' + curso.id_course_schedule + '}' +  `">
+                      <a type="button" role="button" class="btn btn-secondary text-white" href="`+ '${pageContext.request.contextPath}${studentsAction}'+id_curso+`">
                         <i class="fas fa-users"></i> Students
                       </a>
                     
@@ -831,13 +844,11 @@
       el boton para ir al dia actual
     */
 
-    function verify_today_button(objective_month){
-      if( (month + objective_month) != today[1] ){
-        $('#go_today')[0].disabled = false;
-      }else{
-        yr = 0;
-        mnth = 0;
+    function verify_today_button(objective_year, objective_month){
+      if( objective_month == today[1] && objective_year == today[0]){
         $('#go_today')[0].disabled = true;
+      }else{
+        $('#go_today')[0].disabled = false;
       }
     }
 
@@ -854,18 +865,22 @@
             //-- CSS configuration
             e.target.classList.add('active');
             e.target.parentElement.nextElementSibling.children[0].classList.remove('active');
+            e.target.classList.add('font-weight-bold');
+            e.target.parentElement.nextElementSibling.children[0].classList.remove('font-weight-bold');
             //-- Collapse configuration
             $('#indiv_collapse').collapse('show');
             $('#groups_collapse').collapse('hide');
             break;
           case 'groups_toggle':
+            //-- CSS configuration
             e.target.classList.add('active');
             e.target.parentElement.previousElementSibling.children[0].classList.remove('active');
+            e.target.classList.add('font-weight-bold');
+            e.target.parentElement.previousElementSibling.children[0].classList.remove('font-weight-bold');
+            //-- Collapse configuration
             $('#groups_collapse').collapse('show');
             $('#indiv_collapse').collapse('hide');
             break;
-          default:
-            console.log('Doesnt work');
         }
       };
     });
@@ -874,15 +889,19 @@
   <!-- HACE UN RENDERIZADO CON TODA LA INFORMACION COMO PRODUCTO FINAL -->
   <script type="text/javascript" charset="utf-8">
     function renderCalendar(...f) {
-
-      // Verifica si el mes es igual al actual para mostrar el boton "today"
-      verify_today_button(f[1]);
+    
+      //-- Loading calendar
+      $('#go_today')[0].disabled = true;
+      $('#spinner_calendar_loading').toggleClass('d-block d-none');
+      $('#today_text').toggleClass('d-block d-none');
+      dias.forEach(dia => { if(dia.children.length > 1) dia.removeChild(dia.children[1]) });
+    
       // Muestra el mes actual
-      printMonth(new Date(year + f[0], month + f[1]));
+      printMonth(new Date(f[0], f[1]));
 
       let i = 0;
       // Obtiene el ultimo dia del mes anterior al actual
-      let prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
+      let prevLastDay = new Date(f[0], f[1], i).getDay();
       // Verifica que dia es
       let weekDay = whichDayIsIt(prevLastDay.toString());
 
@@ -891,19 +910,19 @@
 
         if (weekDay == 'Sun') { i++; break; }
         i--;
-        prevLastDay = new Date(year + f[0], month + f[1], i).getDay();
+        prevLastDay = new Date(f[0], f[1], i).getDay();
         weekDay = whichDayIsIt(prevLastDay.toString());
 
       }
 
-      prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
+      prevLastDay = new Date(f[0], f[1], i).getDate();
 
-      let current_month = month + f[1];
+      let current_month = f[1];
 
       // For para establecer dias uno por uno hasta finalizar el numero de casillas dentro del calendario
       for (let element of dias) {
 
-        let ele = new Date(year + f[0], month + f[1], i);
+        let ele = new Date(f[0], f[1], i);
         ele = [ele.getFullYear(), ele.getMonth(), ele.getDate()];
 
         // Si el mes del dia objetivo del calendario no es igual al mes actual, establecer como "fuera del mes"
@@ -917,7 +936,7 @@
 
         element.children[0].innerHTML = prevLastDay;  // Muestra el dia objetivo
 
-        let dateForDiv = new Date(year + f[0], month + f[1], i);
+        let dateForDiv = new Date(f[0], f[1], i);
         element.setAttribute('data-el-date', dateForDiv.toLocaleDateString()); // Deja la informacion del dia en el elemento
 
         /*------------------------------------------------------------------------------
@@ -927,7 +946,7 @@
         ------------------------------------------------------------------------------*/
 
         i++;
-        prevLastDay = new Date(year + f[0], month + f[1], i).getDate();
+        prevLastDay = new Date(f[0], f[1], i).getDate();
 
       }
 
@@ -938,7 +957,7 @@
     //getAPIToday();
 
     // renderizar el dia de hoy
-    renderCalendar(0, 0);
+    renderCalendar(year,month);
   </script>
 
   <!-- SCRIPT PARA CAMBIAR DE MES -->
@@ -951,35 +970,35 @@
 
           case ev.target.className.includes('left'):
 
-            if ((month + mnth) != 0) {
-              mnth--;
-              renderCalendar(yr,mnth);
-              //getAPIDinamicDate(yr, mnth);
-            }
-            else {
-              yr--;
+            if(mnth == 0){
+            
+              yr -= 1;
               mnth = 11;
               renderCalendar(yr,mnth);
-              //getAPIDinamicDate(yr, mnth);
+            
+            }else{
+            
+              mnth-=1;
+              renderCalendar(yr,mnth);
+            
             }
-            console.log(month,mnth);
 
             break;
 
           case ev.target.className.includes('right'):
 
-            if ((month + mnth) != 11) {
-              mnth++;
-              renderCalendar(yr,mnth);
-              //getAPIDinamicDate(yr, mnth);
-            }
-            else {
-              yr++;
+            if(mnth == 11){
+            
+              yr += 1;
               mnth = 0;
               renderCalendar(yr,mnth);
-              //getAPIDinamicDate(yr, mnth);
+            
+            }else{
+            
+              mnth += 1;
+              renderCalendar(yr,mnth);
+            
             }
-            console.log(month,mnth);
 
             break;
         }
@@ -996,6 +1015,7 @@
 
       //-- establece el tab "Groups" como tab principal
 
+      $('#groups_toggle').addClass('font-weight-bold');
       if(!$('#groups_toggle').hasClass('active')){
         //-- activa group collapse
         $('#groups_toggle').addClass('active');
@@ -1045,7 +1065,9 @@
     //-- Button go to today
 
     $('#go_today').click(function(e){
-      renderCalendar(0,0);
+      yr = year;
+      mnth = month;
+      renderCalendar(year,month);
     });
   </script>
 
