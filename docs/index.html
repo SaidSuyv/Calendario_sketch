@@ -68,8 +68,43 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #0438ea;
   
+    }
+
+    div.cuadros-mes div.disclaimer_initialized{
+    
+      background: #ea0438;
+    
+    }
+
+    div.cuadros-mes div.disclaimer_opened{
+    
+      background: #38ea04;
+    
+    }
+
+    div.cuadros-mes div.disclaimer_programed{
+    
+    background: #ea6704;
+  
+    }
+
+    div.cuadros-mes div.disclaimer_test{
+    
+      background: #ea04ab;
+    
+    }
+
+    div.cuadros-mes div.disclaimer_finished{
+    
+      background: #000;
+    
+    }
+
+    div.cuadros-mes div.disclaimer_cancelled{
+    
+      background: #9e9e9e;
+    
     }
 
     div.titulo-del-cuadro div.calendar_arrow{
@@ -363,7 +398,7 @@
 
       let localLng = 'en';
 
-      $.getJSON(`http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php?all=true`,
+      $.getJSON(`http://192.168.1.117/projects/MYSQL%20PHP/calendario_cursos/index.php?all_individual=true`,
         function (data) {
         
           //-- Loading calendar
@@ -377,26 +412,37 @@
             let date_dia = dia.getAttribute('data-el-date').split('/').map(e => { return parseInt(e) });
             let cursos_coinciden = [];
             for (let curso of data) {
-              let curso_date_started = curso.started_date.split('-').map(e => { return parseInt(e) }).reverse();
+                let curso_date_started = curso.started_date.split('-').map(e => { return parseInt(e) }).reverse();
                 let curso_date_ended = curso.ended_date.split('-').map(e => { return parseInt(e) }).reverse();
-                if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_started[1]) {
-                  let dia_end = new Date(curso_date_ended[2], curso_date_ended[1], 0).getDate();
-                  let limite = curso_date_ended[0];
-                  for (let i = 0; i < limite; i++) {
-                    curso_date_ended[0] = dia_end;
-                    dia_end++;
+                /*curso_date_started = [6,11,2021]*/
+                /*curso_date_ended = [8,12,2021]*/
+                //-- Hace que el dia final del curso, sea un numero mayor para su correcta verificacion
+                //-- ejm: dia objetivo: 13, dia final curso: 8, verificacion: falso
+                //-- arreglado: dia objetivo: 13, dia final curso: 39, verificacion: verdadero
+                if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_started[1] && date_dia[1] != curso_date_ended[1]) {
+                  let dia_verifier = curso_date_started[0];
+                  let verifier = new Date(curso_date_started[2],curso_date_started[1],dia_verifier).toLocaleDateString();
+                  let limite = new Date(curso_date_ended[2],curso_date_ended[1],curso_date_ended[0]).toLocaleDateString();
+                  while(verifier != limite){
+                  
+                    curso_date_ended[0] += 1;
+                    dia_verifier += 1;
+                    verifier = new Date(curso_date_started[2],curso_date_started[1],dia_verifier).toLocaleDateString();
+                  
                   }
                 }
-                if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_ended[1]) {
-                  let dia_start = new Date(curso_date_started[2], curso_date_started[1], 1).getDate();
-                  let verifier = new Date(curso_date_started[2], curso_date_started[1], 0).getDate();
-                  let limite = curso_date_started[0];
-                  do {
-                    curso_date_started[0] = dia_start;
-                    dia_start -= 1;
-                    verifier -= 1;
+                //-- Si el mes objetivo es igual al mes final del curso realiza el codigo (esta generando un loop infinito en diciembre)
+                if (curso_date_started[1] < curso_date_ended[1] && date_dia[1] == curso_date_ended[1] && date_dia[1] != curso_date_started[1]) {
+                  let dia_verifier = curso_date_ended[0];
+                  let verifier = new Date(curso_date_ended[2],curso_date_ended[1],dia_verifier).toLocaleDateString();
+                  let limite = new Date(curso_date_started[2],(curso_date_started[1]-1),curso_date_started[0]).toLocaleDateString();
+                  while(verifier != limite){
+                  
+                    curso_date_started[0] -= 1;
+                    dia_verifier -= 1;
+                    verifier = new Date(curso_date_ended[2],curso_date_ended[1],dia_verifier).toLocaleDateString();
+                  
                   }
-                  while (verifier != limite);
                 }
                 // verifica año
                 if (
@@ -404,23 +450,72 @@
                   (date_dia[1] >= curso_date_started[1] && date_dia[1] <= curso_date_ended[1]) &&
                   (date_dia[0] >= curso_date_started[0] && date_dia[0] <= curso_date_ended[0])
                 ) {
-                  cursos_coinciden.push(curso);
+                  cursos_coinciden.push(curso.id_status);
                 }
             }
 
             // añadir el puntito
             if (cursos_coinciden.length > 0) {
 
-              dia.setAttribute('data-has-courses', 'true');
-              dia.setAttribute('data-courses-list', cursos_coinciden.join(','));
-
               if (dia.children.length > 1) dia.removeChild(dia.children[1]);
-              dia.innerHTML += '<div class="courses_disclaimer m-auto mb-1"></div>';
+
+              let str_cursos = cursos_coinciden.join(' ');
+            
+              switch(true){
+              
+                case /5/i.test(str_cursos):
+                  dia.innerHTML += `<div class="disclaimer_container d-flex justify-content-center">
+                                        <div class="courses_disclaimer disclaimer_cancelled"></div>
+                                      </div>`;
+                  break;
+                
+                case /0+/i.test(str_cursos): // PROGRAMED
+                  dia.innerHTML += `<div class="disclaimer_container d-flex justify-content-center">
+                                    <div class="courses_disclaimer disclaimer_programed mx-1"></div>
+                                  </div>`;
+                  break;
+                
+                case 
+                  /1+/i.test(str_cursos) && 
+                  !/0/i.test(str_cursos) : // OPENED
+                  dia.innerHTML += `<div class="disclaimer_container d-flex justify-content-center">
+                                      <div class="courses_disclaimer disclaimer_opened"></div>
+                                    </div>`;
+                  break;
+                
+                case 
+                  /2+/i.test(str_cursos) &&
+                  !/1/i.test(str_cursos) &&
+                  !/0/i.test(str_cursos) : // INITIALIZED
+                  dia.innerHTML += `<div class="disclaimer_container d-flex justify-content-center">
+                                      <div class="courses_disclaimer disclaimer_initialized"></div>
+                                    </div>`;
+                  break;
+                
+                case
+                  /3+/i.test(str_cursos) &&
+                  !/2/i.test(str_cursos) &&
+                  !/1/i.test(str_cursos) &&
+                  !/0/i.test(str_cursos) : // TEST
+                  dia.innerHTML += `<div class="dia d-flex justify-content-center">
+                                      <div class="courses_disclaimer disclaimer_test"></div>
+                                    </div>`;
+                  break;
+                
+                case
+                  /4+/i.test(str_cursos) &&
+                  !/3/i.test(str_cursos) &&
+                  !/2/i.test(str_cursos) &&
+                  !/1/i.test(str_cursos) &&
+                  !/0/i.test(str_cursos) : // FINISHED
+                  dia.innerHTML += `<div class="dia d-flex justify-content-center">
+                                      <div class="courses_disclaimer disclaimer_finished"></div>
+                                    </div>`;
+                  break;
+              
+              }
 
             } else {
-
-              dia.setAttribute('data-has-courses', 'false');
-              dia.removeAttribute('data-courses-list');
 
               if (dia.children.length > 1) dia.removeChild(dia.children[1]);
 
@@ -755,7 +850,6 @@
             for(let curso of JSON.parse(response)){
             
               let id_curso = '${'+curso.id_course_schedule+'}';
-              console.log(curso['nombre_curso']);
               let accordionItem_list = `
               <div class="card">
               
@@ -1039,32 +1133,41 @@
       //-- logica para el modal
       switch (ev.target.tagName) {
         case 'DIV':
-          if( ev.target.className.includes('dia') && !ev.target.className.includes('out-of-month') ){
-            /* Pone el dia en el offcanvas */
-            let curDateDiv = ev.target.getAttribute('data-el-date').split('/');
-            $('#offcanvasLabel_coursesList').html(
-              new Date(
-                parseInt(curDateDiv[2]),
-                parseInt(curDateDiv[1]) - 1,
-                parseInt(curDateDiv[0])
-              ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
-            );
+          if(!ev.target.className.includes('out-of-month')){
           
-            $('#offcanvasExample').modal('show');
-            getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target, tagName: 'DIV' } });
+            let curDateDiv = 0;
+            switch(true){
+            
+              case ev.target.className.includes('dia'):
+                curDateDiv = ev.target.getAttribute('data-el-date').split('/');
+                fecha_lista_cursos(curDateDiv);
+                $('#offcanvasExample').modal('show');
+                getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target, tagName: 'DIV' } });
+                break;
+              
+              case ev.target.className.includes('disclaimer_container'):
+                curDateDiv = ev.target.parentElement.getAttribute('data-el-date').split('/');
+                fecha_lista_cursos(curDateDiv);
+                $('#offcanvasExample').modal('show');
+                getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement, tagName: 'DIV' } });
+                break;
+              
+              case ev.target.className.includes('courses_disclaimer'):
+                curDateDiv = ev.target.parentElement.parentElement.getAttribute('data-el-date').split('/');
+                fecha_lista_cursos(curDateDiv);
+                $('#offcanvasExample').modal('show');
+                getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement.parentElement, tagName: 'DIV' } });
+                break;
+            
+            }
+          
           }
           break;
         case 'P':
           if ( ev.target.parentElement.className.includes('dia') && !ev.target.parentElement.className.includes('out-of-month')) {
             /* Pone el dia en el offcanvas */
             let curDateDiv = ev.target.parentElement.getAttribute('data-el-date').split('/');
-            $('#offcanvasLabel_coursesList').html(
-              new Date(
-                parseInt(curDateDiv[2]),
-                parseInt(curDateDiv[1]) - 1,
-                parseInt(curDateDiv[0])
-              ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + curDateDiv[0] + ', ' + curDateDiv[2]
-            );
+            fecha_lista_cursos(curDateDiv);
           
             $('#offcanvasExample').modal('show');
             getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement, tagName: 'P' } });
@@ -1081,6 +1184,21 @@
       mnth = month;
       renderCalendar(year,month);
     });
+
+    //-- Display
+
+    //- Fecha lista cursos
+    function fecha_lista_cursos(fecha){
+    
+      $('#offcanvasLabel_coursesList').html(
+              new Date(
+                parseInt(fecha[2]),
+                parseInt(fecha[1]) - 1,
+                parseInt(fecha[0])
+              ).toLocaleDateString("en-US", { month: 'long' }) + ' ' + fecha[0] + ', ' + fecha[2]
+      );
+    
+    }
   </script>
 
 </body>
