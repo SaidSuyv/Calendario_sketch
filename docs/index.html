@@ -239,9 +239,9 @@
 
         <div class="modal-footer row justify-content-center align-items-center">
         
-          <button type="button" id="new_btn_modal" class="btn btn-info btn-block col-4" page="/WEB-INF/paginas/admin/adminCourseScheduleAdd.jsp">
-            <i class="fas fa-plus"></i> New
-          </button>
+          <a href="#" class="btn btn-info btn-block col-4" id="newCourseSchedule">
+                     <i class="fas fa-plus"></i> <fmt:message key="NEW" />
+                </a>
         
         </div>
 
@@ -351,6 +351,7 @@
     /* Variable para hacer que pinche funcione lo del new curso y asi */
 
     var its_pressed = false;
+    var current_date = '';
   </script>
 
   <!-- DEFINE FUNCIONES DE LAS PETICIONES HTTP AL SERVIDOR -->
@@ -463,7 +464,13 @@
             
               switch(true){
               
-                case /5/i.test(str_cursos):
+                case 
+                  /5+/i.test(str_cursos) &&
+                  !/0/i.test(str_cursos) &&
+                  !/1/i.test(str_cursos) &&
+                  !/2/i.test(str_cursos) &&
+                  !/3/i.test(str_cursos) &&
+                  !/4/i.test(str_cursos):
                   dia.innerHTML += `<div class="disclaimer_container d-flex justify-content-center">
                                         <div class="courses_disclaimer disclaimer_cancelled"></div>
                                       </div>`;
@@ -573,27 +580,31 @@
       for(let curso of lista_de_cursos){
         let curso_date_started = curso.started_date.split('-').map(e=>{return parseInt(e)}).reverse();
               let curso_date_ended = curso.ended_date.split('-').map(e=>{return parseInt(e)}).reverse();
-              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_started[1]) {
-                //console.log('start es meno a end y fecha actual esta en started');
-                let dia_end = new Date(curso_date_ended[2],curso_date_ended[1],0).getDate();
-                let limite = curso_date_ended[0];
-                for(let i = 0; i < limite; i++){
-                  curso_date_ended[0] = dia_end;
-                  dia_end++;
+              if (curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_started[1] && fecha_actual[1] != curso_date_ended[1]) {
+                  let dia_verifier = curso_date_started[0];
+                  let verifier = new Date(curso_date_started[2],curso_date_started[1],dia_verifier).toLocaleDateString();
+                  let limite = new Date(curso_date_ended[2],curso_date_ended[1],curso_date_ended[0]).toLocaleDateString();
+                  while(verifier != limite){
+                  
+                    curso_date_ended[0] += 1;
+                    dia_verifier += 1;
+                    verifier = new Date(curso_date_started[2],curso_date_started[1],dia_verifier).toLocaleDateString();
+                  
+                  }
                 }
-              }//else console.log('start no es menor a end o fecha actual no esta en started');
-              if(curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_ended[1]){
-                //console.log('start es menos a end y fecha actual esta en ended');
-                let dia_start = new Date(curso_date_started[2],curso_date_started[1],1).getDate();
-                let verifier = new Date(curso_date_started[2], curso_date_started[1],0).getDate();
-                let limite = curso_date_started[0];
-                do{
-                  curso_date_started[0] = dia_start;
-                  dia_start-=1;
-                  verifier-=1;
+                //-- Si el mes objetivo es igual al mes final del curso realiza el codigo (esta generando un loop infinito en diciembre)
+                if (curso_date_started[1] < curso_date_ended[1] && fecha_actual[1] == curso_date_ended[1] && fecha_actual[1] != curso_date_started[1]) {
+                  let dia_verifier = curso_date_ended[0];
+                  let verifier = new Date(curso_date_ended[2],curso_date_ended[1],dia_verifier).toLocaleDateString();
+                  let limite = new Date(curso_date_started[2],(curso_date_started[1]-1),curso_date_started[0]).toLocaleDateString();
+                  while(verifier != limite){
+                  
+                    curso_date_started[0] -= 1;
+                    dia_verifier -= 1;
+                    verifier = new Date(curso_date_ended[2],curso_date_ended[1],dia_verifier).toLocaleDateString();
+                  
+                  }
                 }
-                while(verifier != limite);
-              }
               // verifica año
               if(
                 (fecha_actual[2] >= curso_date_started[2] && fecha_actual[2] <= curso_date_ended[2]) &&
@@ -1140,6 +1151,7 @@
             
               case ev.target.className.includes('dia'):
                 curDateDiv = ev.target.getAttribute('data-el-date').split('/');
+                current_date = ev.target.getAttribute('data-el-date');
                 fecha_lista_cursos(curDateDiv);
                 $('#offcanvasExample').modal('show');
                 getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target, tagName: 'DIV' } });
@@ -1147,6 +1159,7 @@
               
               case ev.target.className.includes('disclaimer_container'):
                 curDateDiv = ev.target.parentElement.getAttribute('data-el-date').split('/');
+                current_date = ev.target.parentElement.getAttribute('data-el-date');
                 fecha_lista_cursos(curDateDiv);
                 $('#offcanvasExample').modal('show');
                 getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement, tagName: 'DIV' } });
@@ -1154,6 +1167,7 @@
               
               case ev.target.className.includes('courses_disclaimer'):
                 curDateDiv = ev.target.parentElement.parentElement.getAttribute('data-el-date').split('/');
+                current_date = ev.target.parentElement.parentElement.getAttribute('data-el-date');
                 fecha_lista_cursos(curDateDiv);
                 $('#offcanvasExample').modal('show');
                 getAPIForCoursesListation({ action: 'forDayList', data: { element_date: ev.target.parentElement.parentElement, tagName: 'DIV' } });
@@ -1167,6 +1181,7 @@
           if ( ev.target.parentElement.className.includes('dia') && !ev.target.parentElement.className.includes('out-of-month')) {
             /* Pone el dia en el offcanvas */
             let curDateDiv = ev.target.parentElement.getAttribute('data-el-date').split('/');
+            current_date = ev.target.parentElement.getAttribute('data-el-date');
             fecha_lista_cursos(curDateDiv);
           
             $('#offcanvasExample').modal('show');
@@ -1199,6 +1214,16 @@
       );
     
     }
+
+    //- Fecha input inicio
+
+    $('#newCourseSchedule').click((e)=>{
+    
+      $('div#addCourseScheduleModal input#startedDate').val(current_date);
+      $('#offcanvasExample').modal('hide');
+      $('#addCourseScheduleModal').modal('show');
+    
+    });
   </script>
 
 </body>
